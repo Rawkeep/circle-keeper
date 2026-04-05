@@ -1,14 +1,36 @@
 {
   "name": "circle-keeper",
-  "private": true,
   "version": "1.0.0",
+  "private": true,
   "type": "module",
+  "description": "Relationship management app with balance monitoring, introvert mode, business networking, and smart reminders.",
+  "author": "rawkeep",
+  "license": "MIT",
+  "keywords": [
+    "relationship-management",
+    "crm",
+    "networking",
+    "contacts",
+    "reminders",
+    "react",
+    "vite"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "node server/index.js",
+    "docker:build": "docker build -t circle-keeper .",
+    "docker:up": "docker compose up -d"
   },
   "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.0",
+    "express-rate-limit": "^7.4.0",
+    "helmet": "^8.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

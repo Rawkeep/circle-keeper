@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import CircleKeeper from './CircleKeeper.jsx'
+import ErrorBoundary from './ErrorBoundary.jsx'
 
 // Polyfill window.storage for standalone deployment (localStorage-based)
 if (!window.storage) {
@@ -17,6 +18,8 @@ if (!window.storage) {
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <CircleKeeper />
+    <ErrorBoundary>
+      <CircleKeeper />
+    </ErrorBoundary>
   </React.StrictMode>
 )
