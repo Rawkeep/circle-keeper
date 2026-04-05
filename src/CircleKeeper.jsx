@@ -671,7 +671,7 @@ export default function CircleKeeper() {
 
         {/* Tags */}
         {(c.tags && c.tags.length > 0) && (
-          <div style={{ padding: "0 24px 8px", display: "flex", flexWrap: "wrap", gap: 6 }}>
+          <div style={{ padding: "0 28px 8px", display: "flex", flexWrap: "wrap", gap: 8 }}>
             {c.tags.map(t => (
               <span key={t} style={styles.tagDisplay}>{t}</span>
             ))}
@@ -682,7 +682,7 @@ export default function CircleKeeper() {
 
         {/* Contact Info */}
         {(c.phone || c.email) && (
-          <div style={{ padding: "0 24px 12px", display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <div style={{ padding: "0 28px 14px", display: "flex", gap: 10, flexWrap: "wrap" }}>
             {c.phone && <span style={styles.contactInfo}>📞 {c.phone}</span>}
             {c.email && <span style={styles.contactInfo}>📧 {c.email}</span>}
           </div>
@@ -918,13 +918,17 @@ export default function CircleKeeper() {
     <div style={styles.app}>
       <Fonts />
       <style>{`
-        @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
-        @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
-        @keyframes float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-6px); } }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.4; transform:scale(0.95); } }
+        @keyframes float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-8px); } }
+        @keyframes breathe { 0%,100% { transform:scale(1); } 50% { transform:scale(1.02); } }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: #D4C4B0; border-radius: 4px; }
-        button:active { transform: scale(0.97) !important; }
+        html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        ::-webkit-scrollbar { width: 0; height: 0; }
+        button { cursor: pointer; }
+        button:active { transform: scale(0.96) !important; transition: transform 0.1s !important; }
+        button:hover { filter: brightness(0.97); }
+        input:focus, textarea:focus { box-shadow: 0 0 0 3px rgba(91,74,63,0.12), 0 2px 12px rgba(91,74,63,0.06) !important; }
       `}</style>
 
       {/* Hero */}
@@ -1156,264 +1160,363 @@ function Fonts() {
 
 const styles = {
   app: {
-    fontFamily: "'Outfit', -apple-system, sans-serif",
-    background: "linear-gradient(180deg, #FAF5EF 0%, #F5EDE3 50%, #EDE4D8 100%)",
+    fontFamily: "'Outfit', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
+    background: "linear-gradient(165deg, #FBF7F2 0%, #F5EDE5 40%, #EDE3D8 70%, #E8DACE 100%)",
     minHeight: "100vh",
     maxWidth: 480,
     margin: "0 auto",
     position: "relative",
-    paddingBottom: 100,
-    color: "#3A2F28",
+    paddingBottom: 110,
+    color: "#2C2420",
     overflow: "hidden",
   },
-  loadWrap: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100vh", background: "#FAF5EF" },
-  loadPulse: { fontSize: 48, animation: "pulse 1.5s ease-in-out infinite", color: "#5B4A3F", marginBottom: 16 },
+  loadWrap: {
+    display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+    height: "100vh", background: "linear-gradient(165deg, #FBF7F2 0%, #EDE3D8 100%)",
+  },
+  loadPulse: { fontSize: 52, animation: "pulse 1.8s ease-in-out infinite", color: "#5B4A3F", marginBottom: 20 },
 
   // Hero
-  hero: { position: "relative", padding: "48px 24px 28px", overflow: "hidden" },
+  hero: { position: "relative", padding: "56px 28px 32px", overflow: "hidden" },
   heroDecor: { position: "absolute", inset: 0, pointerEvents: "none" },
   heroShape: { position: "absolute", color: "#5B4A3F", animation: "float 4s ease-in-out infinite" },
   heroTitle: {
-    fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 44, fontWeight: 400,
-    lineHeight: 1, color: "#3A2F28", margin: 0, letterSpacing: -1,
+    fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 46, fontWeight: 400,
+    lineHeight: 1, color: "#2C2420", margin: 0, letterSpacing: -1.5,
   },
-  heroSub: { fontSize: 14, color: "#8B7E74", marginTop: 8, fontWeight: 300, letterSpacing: 0.5 },
+  heroSub: { fontSize: 15, color: "#9B8E82", marginTop: 10, fontWeight: 300, letterSpacing: 0.3 },
   insightsBtn: {
-    width: 44, height: 44, borderRadius: 14, border: "1.5px solid #D4C4B0",
-    background: "rgba(255,255,255,0.6)", display: "flex", alignItems: "center", justifyContent: "center",
-    fontSize: 20, cursor: "pointer", backdropFilter: "blur(10px)",
+    width: 48, height: 48, borderRadius: 24, border: "none",
+    background: "rgba(255,255,255,0.65)", display: "flex", alignItems: "center", justifyContent: "center",
+    fontSize: 20, cursor: "pointer", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
+    boxShadow: "0 2px 16px rgba(91,74,63,0.08), inset 0 1px 0 rgba(255,255,255,0.5)",
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
   },
   statsRow: {
-    display: "flex", alignItems: "center", justifyContent: "center", gap: 16,
-    marginTop: 24, padding: "16px 16px", background: "rgba(255,255,255,0.6)",
-    borderRadius: 16, backdropFilter: "blur(10px)", flexWrap: "wrap",
+    display: "flex", alignItems: "center", justifyContent: "center", gap: 18,
+    marginTop: 28, padding: "20px 20px",
+    background: "rgba(255,255,255,0.55)",
+    borderRadius: 24, backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", flexWrap: "wrap",
+    boxShadow: "0 4px 24px rgba(91,74,63,0.06), inset 0 1px 0 rgba(255,255,255,0.6)",
+    border: "1px solid rgba(255,255,255,0.5)",
   },
-  stat: { display: "flex", flexDirection: "column", alignItems: "center", gap: 2 },
-  statNum: { fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 28, color: "#3A2F28", lineHeight: 1 },
-  statLabel: { fontSize: 10, color: "#8B7E74", fontWeight: 400, letterSpacing: 0.5, textTransform: "uppercase" },
+  stat: { display: "flex", flexDirection: "column", alignItems: "center", gap: 3 },
+  statNum: { fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 30, color: "#2C2420", lineHeight: 1 },
+  statLabel: { fontSize: 10, color: "#9B8E82", fontWeight: 500, letterSpacing: 0.8, textTransform: "uppercase" },
 
   // Section
-  section: { padding: "12px 24px 8px" },
+  section: { padding: "14px 28px 10px" },
   sectionTitle: {
-    fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 18, fontWeight: 400,
-    margin: "0 0 12px 0", color: "#3A2F28",
+    fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 19, fontWeight: 400,
+    margin: "0 0 14px 0", color: "#2C2420",
   },
 
   // Energy
   energyBtn: {
-    flex: "0 0 auto", display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
-    padding: "10px 14px", borderRadius: 14, border: "1.5px solid #D4C4B0", background: "rgba(255,255,255,0.6)",
-    cursor: "pointer", transition: "all 0.2s", fontFamily: "'Outfit', sans-serif",
+    flex: "0 0 auto", display: "flex", flexDirection: "column", alignItems: "center", gap: 5,
+    padding: "12px 16px", borderRadius: 22, border: "none",
+    background: "rgba(255,255,255,0.55)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
+    cursor: "pointer", transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)", fontFamily: "'Outfit', sans-serif",
+    boxShadow: "0 2px 12px rgba(91,74,63,0.05), inset 0 1px 0 rgba(255,255,255,0.4)",
   },
 
   // Suggestions
-  suggestionList: { display: "flex", flexDirection: "column", gap: 8 },
+  suggestionList: { display: "flex", flexDirection: "column", gap: 10 },
   suggestionCard: {
-    display: "flex", alignItems: "center", gap: 12, padding: "12px 14px",
-    background: "rgba(255,255,255,0.7)", border: "1px solid rgba(212,196,176,0.3)",
-    borderRadius: 14, cursor: "pointer", transition: "all 0.2s", fontFamily: "'Outfit', sans-serif",
-    width: "100%", textAlign: "left",
+    display: "flex", alignItems: "center", gap: 14, padding: "14px 18px",
+    background: "rgba(255,255,255,0.6)", border: "none",
+    borderRadius: 22, cursor: "pointer", transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    fontFamily: "'Outfit', sans-serif", width: "100%", textAlign: "left",
+    backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
+    boxShadow: "0 2px 16px rgba(91,74,63,0.05), inset 0 1px 0 rgba(255,255,255,0.5)",
   },
 
   // Attention cards
-  attentionScroll: { display: "flex", gap: 10, overflowX: "auto", paddingBottom: 8, scrollSnapType: "x mandatory" },
+  attentionScroll: { display: "flex", gap: 12, overflowX: "auto", paddingBottom: 10, scrollSnapType: "x mandatory" },
   attentionCard: {
-    flex: "0 0 auto", width: 110, padding: "14px 10px", background: "#fff",
-    border: "1px solid rgba(212,100,74,0.15)", borderRadius: 16,
-    display: "flex", flexDirection: "column", alignItems: "center", gap: 5,
-    cursor: "pointer", scrollSnapAlign: "start", transition: "all 0.2s",
-    boxShadow: "0 2px 8px rgba(91,74,63,0.06)", fontFamily: "'Outfit', sans-serif",
+    flex: "0 0 auto", width: 116, padding: "18px 12px", background: "rgba(255,255,255,0.65)",
+    border: "none", borderRadius: 24,
+    display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
+    cursor: "pointer", scrollSnapAlign: "start", transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    boxShadow: "0 4px 20px rgba(91,74,63,0.06), inset 0 1px 0 rgba(255,255,255,0.5)",
+    backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
+    fontFamily: "'Outfit', sans-serif",
   },
-  attentionEmoji: { fontSize: 26 },
-  attentionName: { fontSize: 12, fontWeight: 500, color: "#3A2F28", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%" },
+  attentionEmoji: { fontSize: 30 },
+  attentionName: { fontSize: 12, fontWeight: 600, color: "#2C2420", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%" },
   attentionStatus: { fontSize: 11, fontWeight: 600 },
-  attentionTime: { fontSize: 10, color: "#8B7E74" },
+  attentionTime: { fontSize: 10, color: "#9B8E82" },
 
   // Filters
-  filterRow: { display: "flex", gap: 6, padding: "8px 24px 4px", overflowX: "auto", alignItems: "center" },
+  filterRow: { display: "flex", gap: 8, padding: "10px 28px 6px", overflowX: "auto", alignItems: "center" },
   filterBtn: {
-    padding: "6px 12px", borderRadius: 20, border: "1.5px solid #D4C4B0",
-    background: "transparent", fontSize: 12, fontWeight: 500, color: "#5B4A3F",
+    padding: "8px 16px", borderRadius: 50, border: "none",
+    background: "rgba(255,255,255,0.5)", fontSize: 12, fontWeight: 500, color: "#5B4A3F",
     cursor: "pointer", whiteSpace: "nowrap", fontFamily: "'Outfit', sans-serif",
-    transition: "all 0.2s", flexShrink: 0,
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)", flexShrink: 0,
+    backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
+    boxShadow: "0 1px 8px rgba(91,74,63,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
   },
-  filterActive: { background: "#5B4A3F", color: "#FAF5EF", borderColor: "#5B4A3F" },
+  filterActive: { background: "#3A2F28", color: "#FAF5EF", boxShadow: "0 4px 16px rgba(58,47,40,0.2)" },
 
   // Contact List
-  contactList: { padding: "8px 16px" },
+  contactList: { padding: "8px 20px" },
   contactCard: {
     display: "flex", alignItems: "center", justifyContent: "space-between",
-    width: "100%", padding: "12px 14px", background: "#fff",
-    border: "1px solid rgba(212,196,176,0.4)", borderRadius: 16,
-    marginBottom: 8, cursor: "pointer", transition: "all 0.2s",
-    animation: "fadeUp 0.4s ease-out both", boxShadow: "0 1px 4px rgba(91,74,63,0.04)",
+    width: "100%", padding: "16px 18px", background: "rgba(255,255,255,0.6)",
+    border: "none", borderRadius: 22,
+    marginBottom: 10, cursor: "pointer", transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    animation: "fadeUp 0.5s ease-out both",
+    boxShadow: "0 2px 16px rgba(91,74,63,0.05), inset 0 1px 0 rgba(255,255,255,0.5)",
     fontFamily: "'Outfit', sans-serif", textAlign: "left",
+    backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
   },
-  cardLeft: { display: "flex", alignItems: "center", gap: 10, minWidth: 0, flex: 1 },
-  cardEmoji: { width: 40, height: 40, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 },
-  cardInfo: { display: "flex", flexDirection: "column", gap: 2, minWidth: 0 },
-  cardName: { fontSize: 14, fontWeight: 500, color: "#3A2F28", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" },
-  cardMeta: { fontSize: 11, color: "#8B7E74", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" },
-  cardRight: { display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 3, flexShrink: 0, marginLeft: 8 },
-  miniBar: { width: 48, height: 4, borderRadius: 2, background: "#EDE4D8", overflow: "hidden" },
-  miniBarFill: { height: "100%", borderRadius: 2, transition: "width 0.6s ease" },
-  cardStatus: { fontSize: 10, fontWeight: 600 },
+  cardLeft: { display: "flex", alignItems: "center", gap: 14, minWidth: 0, flex: 1 },
+  cardEmoji: {
+    width: 48, height: 48, borderRadius: 24, display: "flex", alignItems: "center", justifyContent: "center",
+    fontSize: 22, flexShrink: 0, boxShadow: "0 2px 8px rgba(91,74,63,0.06)",
+  },
+  cardInfo: { display: "flex", flexDirection: "column", gap: 3, minWidth: 0 },
+  cardName: { fontSize: 15, fontWeight: 600, color: "#2C2420", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" },
+  cardMeta: { fontSize: 11, color: "#9B8E82", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" },
+  cardRight: { display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4, flexShrink: 0, marginLeft: 10 },
+  miniBar: { width: 52, height: 5, borderRadius: 20, background: "rgba(212,196,176,0.3)", overflow: "hidden" },
+  miniBarFill: { height: "100%", borderRadius: 20, transition: "width 0.8s cubic-bezier(0.4, 0, 0.2, 1)" },
+  cardStatus: { fontSize: 10, fontWeight: 600, letterSpacing: 0.3 },
 
   // FAB
   fab: {
-    position: "fixed", bottom: 28, right: "calc(50% - 210px)",
-    width: 56, height: 56, borderRadius: "50%",
-    background: "linear-gradient(135deg, #5B4A3F 0%, #3A2F28 100%)",
+    position: "fixed", bottom: 32, right: "calc(50% - 212px)",
+    width: 60, height: 60, borderRadius: 30,
+    background: "linear-gradient(145deg, #5B4A3F 0%, #3A2F28 100%)",
     color: "#FAF5EF", border: "none", cursor: "pointer",
     display: "flex", alignItems: "center", justifyContent: "center",
-    boxShadow: "0 4px 20px rgba(58,47,40,0.3), 0 0 0 4px rgba(250,245,239,0.4)",
-    transition: "all 0.3s", zIndex: 100,
+    boxShadow: "0 8px 32px rgba(58,47,40,0.3), 0 0 0 5px rgba(250,245,239,0.3)",
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)", zIndex: 100,
   },
 
   // Header
-  header: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px 8px" },
-  headerTitle: { fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 20, margin: 0, color: "#3A2F28" },
-  backBtn: { background: "none", border: "none", fontSize: 15, color: "#5B4A3F", cursor: "pointer", fontFamily: "'Outfit', sans-serif", fontWeight: 500, padding: "8px 4px" },
-  editBtn: { background: "none", border: "none", fontSize: 18, color: "#5B4A3F", cursor: "pointer", padding: "8px" },
+  header: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 24px 10px" },
+  headerTitle: { fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 21, margin: 0, color: "#2C2420" },
+  backBtn: {
+    background: "rgba(255,255,255,0.5)", border: "none", fontSize: 14, color: "#5B4A3F",
+    cursor: "pointer", fontFamily: "'Outfit', sans-serif", fontWeight: 500, padding: "10px 16px",
+    borderRadius: 50, backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
+    boxShadow: "0 1px 8px rgba(91,74,63,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
+    transition: "all 0.2s",
+  },
+  editBtn: {
+    background: "rgba(255,255,255,0.5)", border: "none", fontSize: 16, color: "#5B4A3F",
+    cursor: "pointer", padding: "10px 14px", borderRadius: 50,
+    backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
+    boxShadow: "0 1px 8px rgba(91,74,63,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
+    transition: "all 0.2s",
+  },
 
   // Detail
-  detailHero: { textAlign: "center", padding: "8px 24px 16px" },
-  detailEmoji: { fontSize: 56, marginBottom: 8 },
-  detailName: { fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 32, fontWeight: 400, margin: "0 0 8px", color: "#3A2F28" },
-  catBadge: { display: "inline-block", padding: "4px 12px", borderRadius: 20, fontSize: 11, fontWeight: 500 },
-  warmthBarOuter: { height: 6, borderRadius: 3, background: "#EDE4D8", margin: "14px auto 8px", maxWidth: 200, overflow: "hidden" },
-  warmthBarInner: { height: "100%", borderRadius: 3, transition: "width 0.8s ease" },
-  warmthLabel: { fontSize: 12, color: "#8B7E74" },
-  noteBox: { margin: "0 24px 12px", padding: "12px 16px", background: "rgba(255,255,255,0.7)", borderRadius: 12, fontSize: 13, color: "#5B4A3F", lineHeight: 1.5 },
-  bdayBadge: { display: "inline-block", marginTop: 8, padding: "4px 14px", borderRadius: 20, fontSize: 12, fontWeight: 500, background: "#F3E8FF", color: "#9B7EC4" },
+  detailHero: { textAlign: "center", padding: "12px 28px 20px" },
+  detailEmoji: {
+    fontSize: 64, marginBottom: 12,
+    width: 100, height: 100, lineHeight: "100px",
+    borderRadius: 50, background: "rgba(255,255,255,0.6)",
+    display: "inline-block",
+    boxShadow: "0 8px 32px rgba(91,74,63,0.08), inset 0 2px 0 rgba(255,255,255,0.5)",
+    backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
+  },
+  detailName: { fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 34, fontWeight: 400, margin: "0 0 10px", color: "#2C2420" },
+  catBadge: {
+    display: "inline-block", padding: "6px 16px", borderRadius: 50, fontSize: 12, fontWeight: 500,
+    backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
+  },
+  warmthBarOuter: {
+    height: 8, borderRadius: 20, background: "rgba(212,196,176,0.25)", margin: "18px auto 10px",
+    maxWidth: 220, overflow: "hidden",
+  },
+  warmthBarInner: { height: "100%", borderRadius: 20, transition: "width 1s cubic-bezier(0.4, 0, 0.2, 1)" },
+  warmthLabel: { fontSize: 12, color: "#9B8E82", letterSpacing: 0.2 },
+  noteBox: {
+    margin: "0 28px 14px", padding: "16px 20px",
+    background: "rgba(255,255,255,0.55)", borderRadius: 22,
+    fontSize: 13, color: "#5B4A3F", lineHeight: 1.6,
+    backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
+    boxShadow: "0 2px 12px rgba(91,74,63,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
+  },
+  bdayBadge: {
+    display: "inline-block", marginTop: 10, padding: "6px 18px", borderRadius: 50,
+    fontSize: 12, fontWeight: 500, background: "rgba(155,126,196,0.12)", color: "#9B7EC4",
+    backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
+  },
 
   // Balance card
   balanceCard: {
-    margin: "0 24px 12px", padding: "14px 16px", background: "rgba(255,255,255,0.7)",
-    borderRadius: 14, border: "1px solid rgba(212,196,176,0.3)",
+    margin: "0 28px 14px", padding: "18px 20px", background: "rgba(255,255,255,0.55)",
+    borderRadius: 24, border: "none",
+    backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
+    boxShadow: "0 2px 16px rgba(91,74,63,0.05), inset 0 1px 0 rgba(255,255,255,0.4)",
   },
 
   // Contact info
   contactInfo: {
-    fontSize: 12, color: "#5B4A3F", padding: "4px 10px", borderRadius: 8,
-    background: "rgba(255,255,255,0.7)", border: "1px solid rgba(212,196,176,0.3)",
+    fontSize: 12, color: "#5B4A3F", padding: "8px 14px", borderRadius: 50,
+    background: "rgba(255,255,255,0.55)", border: "none",
+    backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
+    boxShadow: "0 1px 6px rgba(91,74,63,0.04)",
   },
 
   // Tags
   tagDisplay: {
-    fontSize: 11, padding: "3px 10px", borderRadius: 10,
-    background: "rgba(91,74,63,0.08)", color: "#5B4A3F", fontWeight: 500,
+    fontSize: 11, padding: "5px 14px", borderRadius: 50,
+    background: "rgba(91,74,63,0.07)", color: "#5B4A3F", fontWeight: 500,
   },
   topicChip: {
-    padding: "5px 10px", borderRadius: 10, border: "1px solid #D4C4B0",
-    background: "transparent", fontSize: 11, color: "#5B4A3F", cursor: "pointer",
-    fontFamily: "'Outfit', sans-serif", transition: "all 0.15s", whiteSpace: "nowrap",
+    padding: "7px 14px", borderRadius: 50, border: "none",
+    background: "rgba(255,255,255,0.5)", fontSize: 11, color: "#5B4A3F", cursor: "pointer",
+    fontFamily: "'Outfit', sans-serif", transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)", whiteSpace: "nowrap",
+    boxShadow: "0 1px 6px rgba(91,74,63,0.04), inset 0 1px 0 rgba(255,255,255,0.3)",
+    backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
   },
 
   // Incoming
   incomingBtn: {
-    width: "100%", padding: "14px 16px", borderRadius: 14,
-    border: "1.5px solid rgba(123,158,196,0.4)", background: "rgba(123,158,196,0.08)",
-    color: "#5B7A94", fontSize: 14, fontWeight: 500, cursor: "pointer",
-    fontFamily: "'Outfit', sans-serif", transition: "all 0.2s", textAlign: "center",
+    width: "100%", padding: "16px 20px", borderRadius: 24,
+    border: "none", background: "rgba(123,158,196,0.1)",
+    color: "#5B7A94", fontSize: 14, fontWeight: 600, cursor: "pointer",
+    fontFamily: "'Outfit', sans-serif", transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    textAlign: "center", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
+    boxShadow: "0 2px 12px rgba(123,158,196,0.08), inset 0 1px 0 rgba(255,255,255,0.3)",
   },
 
   // Actions
-  actionGrid: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 8 },
+  actionGrid: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 10 },
   actionBtn: {
-    display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
-    padding: "14px 8px", background: "#fff", border: "1.5px solid #D4C4B0",
-    borderRadius: 14, cursor: "pointer", transition: "all 0.2s", fontFamily: "'Outfit', sans-serif",
+    display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
+    padding: "16px 8px", background: "rgba(255,255,255,0.6)", border: "none",
+    borderRadius: 22, cursor: "pointer", transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    fontFamily: "'Outfit', sans-serif",
+    backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
+    boxShadow: "0 2px 12px rgba(91,74,63,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
   },
-  actionLabel: { fontSize: 10, fontWeight: 500, color: "#3A2F28" },
+  actionLabel: { fontSize: 10, fontWeight: 600, color: "#3A2F28", letterSpacing: 0.2 },
 
   // Timeline
   timeline: { paddingLeft: 8 },
-  timelineItem: { display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 12, position: "relative" },
-  timelineDot: { width: 8, height: 8, borderRadius: "50%", background: "#D4C4B0", marginTop: 6, flexShrink: 0 },
+  timelineItem: {
+    display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 14, position: "relative",
+    padding: "10px 14px", background: "rgba(255,255,255,0.35)", borderRadius: 18,
+    backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
+  },
+  timelineDot: {
+    width: 10, height: 10, borderRadius: 20, background: "#D4C4B0", marginTop: 5, flexShrink: 0,
+    boxShadow: "0 1px 4px rgba(91,74,63,0.1)",
+  },
   timelineContent: { display: "flex", justifyContent: "space-between", flex: 1, fontSize: 13, alignItems: "flex-start" },
-  timelineDate: { fontSize: 11, color: "#8B7E74", flexShrink: 0, marginLeft: 8 },
+  timelineDate: { fontSize: 11, color: "#9B8E82", flexShrink: 0, marginLeft: 8 },
 
   // Form
-  formWrap: { padding: "8px 24px", paddingBottom: 32 },
-  formInner: { display: "flex", flexDirection: "column", gap: 14 },
-  formGroup: { display: "flex", flexDirection: "column", gap: 6 },
-  label: { fontSize: 13, fontWeight: 500, color: "#5B4A3F", letterSpacing: 0.3 },
+  formWrap: { padding: "8px 28px", paddingBottom: 36 },
+  formInner: { display: "flex", flexDirection: "column", gap: 18 },
+  formGroup: { display: "flex", flexDirection: "column", gap: 8 },
+  label: { fontSize: 13, fontWeight: 600, color: "#5B4A3F", letterSpacing: 0.3 },
   input: {
-    padding: "12px 16px", borderRadius: 12, border: "1.5px solid #D4C4B0",
-    fontSize: 15, fontFamily: "'Outfit', sans-serif", background: "#fff",
-    color: "#3A2F28", outline: "none", transition: "border-color 0.2s",
+    padding: "14px 20px", borderRadius: 50, border: "none",
+    fontSize: 15, fontFamily: "'Outfit', sans-serif",
+    background: "rgba(255,255,255,0.6)", color: "#2C2420", outline: "none",
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
+    boxShadow: "0 2px 12px rgba(91,74,63,0.04), inset 0 1px 0 rgba(255,255,255,0.5)",
   },
   textarea: {
-    padding: "12px 16px", borderRadius: 12, border: "1.5px solid #D4C4B0",
-    fontSize: 14, fontFamily: "'Outfit', sans-serif", background: "#fff",
-    color: "#3A2F28", outline: "none", resize: "none", transition: "border-color 0.2s",
+    padding: "16px 20px", borderRadius: 24, border: "none",
+    fontSize: 14, fontFamily: "'Outfit', sans-serif",
+    background: "rgba(255,255,255,0.6)", color: "#2C2420", outline: "none", resize: "none",
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
+    boxShadow: "0 2px 12px rgba(91,74,63,0.04), inset 0 1px 0 rgba(255,255,255,0.5)",
   },
-  emojiGrid: { display: "flex", flexWrap: "wrap", gap: 6 },
+  emojiGrid: { display: "flex", flexWrap: "wrap", gap: 8 },
   emojiBtn: {
-    width: 36, height: 36, borderRadius: 10, border: "1.5px solid #D4C4B0", background: "#fff",
+    width: 40, height: 40, borderRadius: 20, border: "none",
+    background: "rgba(255,255,255,0.5)",
     fontSize: 18, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-    transition: "all 0.2s",
+    transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
+    boxShadow: "0 1px 6px rgba(91,74,63,0.04), inset 0 1px 0 rgba(255,255,255,0.3)",
+    backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
   },
-  catSelect: { display: "flex", gap: 6, flexWrap: "wrap" },
+  catSelect: { display: "flex", gap: 8, flexWrap: "wrap" },
   catOption: {
-    padding: "7px 12px", borderRadius: 12, border: "1.5px solid #D4C4B0", background: "transparent",
-    fontSize: 11, fontWeight: 500, cursor: "pointer", fontFamily: "'Outfit', sans-serif",
-    transition: "all 0.2s", color: "#5B4A3F",
+    padding: "9px 16px", borderRadius: 50, border: "none",
+    background: "rgba(255,255,255,0.5)",
+    fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: "'Outfit', sans-serif",
+    transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)", color: "#5B4A3F",
+    boxShadow: "0 1px 8px rgba(91,74,63,0.04), inset 0 1px 0 rgba(255,255,255,0.3)",
+    backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
   },
-  freqSelect: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6 },
+  freqSelect: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 },
   freqOption: {
-    padding: "10px 8px", borderRadius: 12, border: "1.5px solid #D4C4B0", background: "transparent",
+    padding: "12px 10px", borderRadius: 50, border: "none",
+    background: "rgba(255,255,255,0.5)",
     fontSize: 11, fontWeight: 500, cursor: "pointer", fontFamily: "'Outfit', sans-serif",
-    transition: "all 0.2s", color: "#5B4A3F", textAlign: "center",
+    transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)", color: "#5B4A3F", textAlign: "center",
+    boxShadow: "0 1px 8px rgba(91,74,63,0.04), inset 0 1px 0 rgba(255,255,255,0.3)",
+    backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
   },
   submitBtn: {
-    padding: "14px 20px", borderRadius: 14, border: "none",
-    background: "linear-gradient(135deg, #5B4A3F 0%, #3A2F28 100%)",
-    color: "#FAF5EF", fontSize: 15, fontWeight: 600, cursor: "pointer",
-    fontFamily: "'Outfit', sans-serif", boxShadow: "0 4px 16px rgba(58,47,40,0.2)",
-    marginTop: 4, transition: "all 0.2s",
+    padding: "16px 24px", borderRadius: 50, border: "none",
+    background: "linear-gradient(145deg, #5B4A3F 0%, #3A2F28 100%)",
+    color: "#FAF5EF", fontSize: 16, fontWeight: 600, cursor: "pointer",
+    fontFamily: "'Outfit', sans-serif",
+    boxShadow: "0 8px 32px rgba(58,47,40,0.25)",
+    marginTop: 8, transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    letterSpacing: 0.3,
   },
   cancelBtn: {
-    padding: "12px 20px", borderRadius: 14, border: "1.5px solid #D4C4B0", background: "transparent",
+    padding: "14px 24px", borderRadius: 50, border: "none",
+    background: "rgba(255,255,255,0.5)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
     color: "#5B4A3F", fontSize: 14, fontWeight: 500, cursor: "pointer", fontFamily: "'Outfit', sans-serif",
+    boxShadow: "0 1px 8px rgba(91,74,63,0.04)",
+    transition: "all 0.2s",
   },
   deleteBtn: {
-    margin: "24px auto", display: "block", padding: "10px 20px", borderRadius: 12,
-    border: "1px solid rgba(212,100,74,0.3)", background: "transparent",
-    color: "#D4644A", fontSize: 13, fontWeight: 500, cursor: "pointer", fontFamily: "'Outfit', sans-serif",
+    margin: "28px auto", display: "block", padding: "12px 24px", borderRadius: 50,
+    border: "none", background: "rgba(212,100,74,0.08)",
+    color: "#D4644A", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "'Outfit', sans-serif",
+    boxShadow: "0 2px 12px rgba(212,100,74,0.06)",
+    transition: "all 0.2s",
   },
 
   // Insights
   insightCard: {
-    margin: "8px 24px", padding: "18px 18px", background: "rgba(255,255,255,0.7)",
-    borderRadius: 16, border: "1px solid rgba(212,196,176,0.3)",
+    margin: "10px 28px", padding: "22px 22px", background: "rgba(255,255,255,0.55)",
+    borderRadius: 28, border: "none",
+    backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
+    boxShadow: "0 4px 24px rgba(91,74,63,0.05), inset 0 1px 0 rgba(255,255,255,0.5)",
   },
   insightTitle: {
-    fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 16, fontWeight: 400,
-    margin: "0 0 12px 0", color: "#3A2F28",
+    fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 17, fontWeight: 400,
+    margin: "0 0 14px 0", color: "#2C2420",
   },
-  healthBar: { display: "flex", borderRadius: 4, overflow: "hidden", height: 8 },
+  healthBar: { display: "flex", borderRadius: 20, overflow: "hidden", height: 10 },
   balanceRow: {
-    display: "flex", alignItems: "center", gap: 10, padding: "8px 0",
-    borderBottom: "1px solid rgba(212,196,176,0.2)", width: "100%",
-    background: "transparent", border: "none", borderBottom: "1px solid rgba(212,196,176,0.2)",
+    display: "flex", alignItems: "center", gap: 12, padding: "10px 0",
+    width: "100%", background: "transparent", border: "none",
+    borderBottom: "1px solid rgba(212,196,176,0.15)",
     cursor: "pointer", fontFamily: "'Outfit', sans-serif",
+    transition: "all 0.2s",
   },
 
   // Empty
-  emptyState: { textAlign: "center", padding: "48px 24px" },
-  emptyTitle: { fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 20, color: "#3A2F28", margin: "12px 0 4px" },
-  emptyHint: { fontSize: 13, color: "#8B7E74" },
+  emptyState: { textAlign: "center", padding: "56px 28px" },
+  emptyTitle: { fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 22, color: "#2C2420", margin: "16px 0 6px" },
+  emptyHint: { fontSize: 14, color: "#9B8E82" },
 
   // Toast
   toast: {
-    position: "fixed", bottom: 96, left: "50%", transform: "translateX(-50%)",
-    padding: "10px 20px", borderRadius: 12,
-    background: "rgba(58,47,40,0.92)", color: "#FAF5EF",
-    fontSize: 13, fontWeight: 500, zIndex: 200,
-    animation: "fadeUp 0.3s ease-out", backdropFilter: "blur(8px)",
-    boxShadow: "0 4px 20px rgba(0,0,0,0.15)", fontFamily: "'Outfit', sans-serif",
-    whiteSpace: "nowrap",
+    position: "fixed", bottom: 104, left: "50%", transform: "translateX(-50%)",
+    padding: "14px 28px", borderRadius: 50,
+    background: "rgba(44,36,32,0.88)", color: "#FAF5EF",
+    fontSize: 14, fontWeight: 500, zIndex: 200,
+    animation: "fadeUp 0.4s cubic-bezier(0.4, 0, 0.2, 1)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
+    boxShadow: "0 8px 32px rgba(0,0,0,0.2)", fontFamily: "'Outfit', sans-serif",
+    whiteSpace: "nowrap", letterSpacing: 0.2,
   },
 };
