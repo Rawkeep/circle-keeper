@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Frakibou Imqhamed - CV Executive</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #1b2a4a;
+      --gold: #b8963e;
+      --gold-light: #d4b86a;
+      --text: #2c2c2c;
+      --text-muted: #5a5a5a;
+      --text-light: #7a7a7a;
+      --bg: #f5f5f0;
+      --white: #ffffff;
+      --border: #d5d5d0;
+      --sidebar-bg: #1b2a4a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    @page { size: A4; margin: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto;
+      background: var(--white);
+      box-shadow: 0 2px 40px rgba(0,0,0,0.1);
+      display: grid;
+      grid-template-columns: 72mm 1fr;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      background: var(--sidebar-bg);
+      color: rgba(255,255,255,0.9);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .photo-area { padding: 32px 24px 20px; text-align: center; }
+
+    .photo-wrap {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid var(--gold);
+      margin: 0 auto 16px;
+    }
+
+    .photo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 18%;
+      filter: contrast(1.08) brightness(1.05) saturate(1.1);
+      transform: scale(1.2);
+    }
+
+    .sidebar-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: white;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-title {
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--gold-light);
+      font-weight: 500;
+    }
+
+    .sidebar-sections { padding: 0 20px 24px; flex: 1; }
+
+    .sb-section { margin-bottom: 22px; }
+
+    .sb-section h3 {
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      color: var(--gold);
+      font-weight: 600;
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 0.68rem;
+      margin-bottom: 8px;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.4;
+    }
+
+    .contact-item .icon { width: 14px; text-align: center; color: var(--gold-light); flex-shrink: 0; font-size: 0.6rem; margin-top: 1px; }
+    .contact-item a { color: rgba(255,255,255,0.8); text-decoration: none; }
+
+    .skill-group { margin-bottom: 10px; }
+    .skill-group-title { font-size: 0.62rem; font-weight: 600; color: rgba(255,255,255,0.95); margin-bottom: 4px; }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+    .skill-tag { font-size: 0.58rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.75); padding: 2px 7px; border-radius: 3px; }
+
+    .lang-item { display: flex; justify-content: space-between; align-items: center; font-size: 0.68rem; padding: 4px 0; }
+    .lang-name { color: rgba(255,255,255,0.9); }
+    .lang-level { font-size: 0.58rem; color: var(--gold-light); font-weight: 500; }
+
+    .project-item { font-size: 0.62rem; color: rgba(255,255,255,0.7); padding: 2px 0; }
+    .project-item::before { content: "—"; margin-right: 6px; color: var(--gold); }
+    .proj-desc { display: block; font-size: 0.55rem; color: rgba(255,255,255,0.5); margin-left: 14px; margin-top: 1px; line-height: 1.4; }
+
+    /* MAIN */
+    .main { padding: 32px 30px 24px 28px; }
+
+    .main-header { margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid var(--navy); }
+    .main-header h1 { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 700; color: var(--navy); letter-spacing: 0.5px; margin-bottom: 2px; }
+    .main-header .tagline { font-size: 0.78rem; color: var(--text-muted); font-weight: 400; letter-spacing: 0.3px; }
+
+    .section { margin-bottom: 22px; }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--navy);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 14px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title::before { content: ''; width: 4px; height: 16px; background: var(--gold); border-radius: 2px; flex-shrink: 0; }
+
+    .profile-text { font-size: 0.78rem; color: var(--text-muted); line-height: 1.7; }
+
+    .entry { margin-bottom: 16px; padding-left: 14px; border-left: 2px solid var(--border); }
+    .entry:last-child { margin-bottom: 0; }
+    .entry-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px; margin-bottom: 2px; }
+    .entry-role { font-size: 0.82rem; font-weight: 600; color: var(--text); }
+    .entry-date { font-size: 0.7rem; color: var(--gold); font-weight: 500; white-space: nowrap; }
+    .entry-company { font-size: 0.74rem; color: var(--text-light); font-style: italic; margin-bottom: 6px; }
+    .entry ul { padding-left: 14px; margin: 0; }
+    .entry li { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 2px; line-height: 1.5; }
+
+    .badge-current { display: inline-block; background: var(--navy); color: white; font-size: 0.55rem; font-weight: 600; padding: 1px 6px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 6px; vertical-align: middle; }
+
+    .edu-entry { margin-bottom: 12px; padding-left: 14px; border-left: 2px solid var(--border); }
+    .edu-entry:last-child { margin-bottom: 0; }
+    .edu-degree { font-size: 0.78rem; font-weight: 600; color: var(--text); }
+    .edu-school { font-size: 0.7rem; color: var(--text-light); font-style: italic; }
+    .edu-date { font-size: 0.65rem; color: var(--gold); font-weight: 500; }
+    .edu-details { font-size: 0.68rem; color: var(--text-muted); margin-top: 2px; }
+
+    /* LANG SWITCHER */
+    .lang-switcher { position: fixed; top: 16px; right: 16px; display: flex; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.12); z-index: 100; }
+    .lang-btn { padding: 8px 16px; font-size: 0.75rem; font-weight: 600; border: none; cursor: pointer; background: var(--white); color: var(--text-light); transition: all 0.2s; letter-spacing: 0.5px; font-family: 'Inter', sans-serif; }
+    .lang-btn.active { background: var(--navy); color: var(--gold); }
+    .lang-btn:hover:not(.active) { background: #f0efe8; color: var(--navy); }
+
+    @media print { body { background: white; } .page { box-shadow: none; margin: 0; } .lang-switcher { display: none; } }
+    @media screen and (max-width: 800px) { .page { width: 100%; grid-template-columns: 1fr; min-height: auto; } .main { padding: 24px 20px; } }
+  </style>
+</head>
+<body>
+
+<div class="lang-switcher">
+  <button class="lang-btn active" onclick="switchLang('de')">DE</button>
+  <button class="lang-btn" onclick="switchLang('en')">EN</button>
+  <button class="lang-btn" onclick="switchLang('fr')">FR</button>
+</div>
+
+<div class="page">
+
+  <div class="sidebar">
+    <div class="photo-area">
+      <div class="photo-wrap">
+        <img src="cv-photo.png" alt="Frakibou Imqhamed">
+      </div>
+      <div class="sidebar-name">Frakibou Imqhamed</div>
+      <div class="sidebar-title">Supply Chain & Developer</div>
+    </div>
+
+    <div class="sidebar-sections">
+
+      <div class="sb-section">
+        <h3 data-i18n="sec_contact">Kontakt</h3>
+        <div class="contact-item"><span class="icon">&#9679;</span><span data-i18n="location">Rösrath, Deutschland</span></div>
+        <div class="contact-item"><span class="icon">&#9679;</span><a href="mailto:frakibou.im@gmail.com">frakibou.im@gmail.com</a></div>
+        <div class="contact-item"><span class="icon">&#9679;</span><span>+49 162 5310328</span></div>
+        <div class="contact-item"><span class="icon">&#9679;</span><a href="https://github.com/Rawkeep">github.com/Rawkeep</a></div>
+      </div>
+
+      <div class="sb-section">
+        <h3 data-i18n="sec_skills">Fachkenntnisse</h3>
+        <div class="skill-group">
+          <div class="skill-group-title">ERP & Business</div>
+          <div class="skill-tags">
+            <span class="skill-tag">MS Dynamics 365</span><span class="skill-tag">SAP</span><span class="skill-tag">MS Office 365</span><span class="skill-tag">VBA</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-title" data-i18n="sk_dev">Entwicklung</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Python</span><span class="skill-tag">JavaScript</span><span class="skill-tag">React</span><span class="skill-tag">Node.js</span><span class="skill-tag">HTML/CSS</span><span class="skill-tag">Git</span><span class="skill-tag">AI/ML</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-title" data-i18n="sk_log">Logistik</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Export</span><span class="skill-tag">Import</span><span class="skill-tag">Supply Chain</span><span class="skill-tag" data-i18n="sk_zoll">Zoll</span><span class="skill-tag">Incoterms</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sb-section">
+        <h3 data-i18n="sec_languages">Sprachen</h3>
+        <div class="lang-item"><span class="lang-name">Ewe</span><span class="lang-level" data-i18n="lv_native">Muttersprache</span></div>
+        <div class="lang-item"><span class="lang-name">Tem / Kotokoli</span><span class="lang-level" data-i18n="lv_native2">Muttersprache</span></div>
+        <div class="lang-item"><span class="lang-name">Ashanti</span><span class="lang-level" data-i18n="lv_native3">Muttersprache</span></div>
+        <div class="lang-item"><span class="lang-name" data-i18n="l_de">Deutsch</span><span class="lang-level" data-i18n="lv_fluent">Verhandlungssicher</span></div>
+        <div class="lang-item"><span class="lang-name" data-i18n="l_fr">Französisch</span><span class="lang-level" data-i18n="lv_fluent2">Verhandlungssicher</span></div>
+        <div class="lang-item"><span class="lang-name" data-i18n="l_en">Englisch</span><span class="lang-level" data-i18n="lv_fluent3">Verhandlungssicher</span></div>
+        <div class="lang-item"><span class="lang-name" data-i18n="l_ar">Arabisch</span><span class="lang-level" data-i18n="lv_script">Schrift</span></div>
+      </div>
+
+      <div class="sb-section">
+        <h3 data-i18n="sec_projects">Projekte</h3>
+        <div class="project-item">OrgMind <span class="proj-desc" data-i18n="p_orgmind">— KI-Plattform mit 25 Modulen f. Wissensmanagement</span></div>
+        <div class="project-item">ImModular <span class="proj-desc" data-i18n="p_immodular">— Property-Management mit KI & OCR</span></div>
+        <div class="project-item">EP (Export Pro) <span class="proj-desc" data-i18n="p_ep">— Globale Export-Logistik-Plattform</span></div>
+        <div class="project-item">Mythos <span class="proj-desc" data-i18n="p_mythos">— KI-Content-Factory f. Text, Bild & Video</span></div>
+        <div class="project-item">Flipflow <span class="proj-desc" data-i18n="p_flipflow">— Social-Media-Manager mit Multi-Plattform-Publishing</span></div>
+        <div class="project-item">Circle Keeper <span class="proj-desc" data-i18n="p_ck">— Netzwerk-Beziehungspflege-App</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="main">
+
+    <div class="main-header">
+      <h1>Frakibou Imqhamed</h1>
+      <div class="tagline" data-i18n="headline">Bachelor Professional Wirtschaftsinformatik | Export & Supply Chain | Full-Stack-Entwicklung</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title" data-i18n="sec_profile">Profil</div>
+      <p class="profile-text" data-i18n="profile">Kaufmann im Groß- und Außenhandel mit über 15 Jahren Erfahrung in Einkauf, internationaler Logistik und Supply-Chain-Management. Aktuell verantwortlich für den Export auf dem afrikanischen Kontinent bei Takasago Europe. Abgeschlossenes Studium der Wirtschaftsinformatik (Bachelor Professional, 2025) und fundierte Full-Stack-Entwicklungskompetenz. Kommunikationsstark in sieben Sprachen, darunter drei Muttersprachen.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title" data-i18n="sec_experience">Berufserfahrung</div>
+
+      <div class="entry">
+        <div class="entry-header">
+          <span class="entry-role" data-i18n="role1">Assistent Transport Afrika <span class="badge-current">aktuell</span></span>
+          <span class="entry-date" data-i18n="date1">11/2025 - heute</span>
+        </div>
+        <div class="entry-company">Takasago Europe GmbH</div>
+        <ul>
+          <li data-i18n="r1b1">Eigenverantwortliche Abwicklung des Exports auf dem gesamten afrikanischen Kontinent</li>
+          <li data-i18n="r1b2">Koordination internationaler Transportketten und Logistiklösungen</li>
+          <li data-i18n="r1b3">Zusammenarbeit mit Partnern, Spediteuren und Behörden in diversen Ländern</li>
+        </ul>
+      </div>
+
+      <div class="entry">
+        <div class="entry-header">
+          <span class="entry-role" data-i18n="role2">Einkäufer & Logistiker</span>
+          <span class="entry-date">01/2017 - 10/2025</span>
+        </div>
+        <div class="entry-company">Liftstar GmbH, Köln</div>
+        <ul>
+          <li data-i18n="r2b1">Materialbewirtschaftung und Beauftragung von Transport- und Mehrwertdienstleistungen</li>
+          <li data-i18n="r2b2">Internationale Korrespondenz mit englisch- und französischsprachigen Geschäftspartnern</li>
+          <li data-i18n="r2b3">Controlling in Transport- und Lagerlogistik inkl. Kennzahlensteuerung</li>
+          <li data-i18n="r2b4">Projektmanagement und Prozessoptimierung in cross-funktionalen Teams</li>
+          <li data-i18n="r2b5">Bearbeitung von Schadensfällen, Reklamationen und Troubleshooting</li>
+        </ul>
+      </div>
+
+      <div class="entry">
+        <div class="entry-header">
+          <span class="entry-role" data-i18n="role3">Fuhrparkmanager</span>
+          <span class="entry-date">07/2015 - 12/2016</span>
+        </div>
+        <div class="entry-company">Liftstar GmbH, Köln</div>
+        <ul>
+          <li data-i18n="r3b1">Verwaltung des Firmenfuhrparks inkl. Leasingverträge und Kilometerüberwachung</li>
+          <li data-i18n="r3b2">Koordination mit Leasinggesellschaften, Autohäusern, Werkstätten und Behörden</li>
+          <li data-i18n="r3b3">Kaufmännische Steuerung, Rechnungsprüfung und Prozessoptimierung</li>
+        </ul>
+      </div>
+
+      <div class="entry">
+        <div class="entry-header">
+          <span class="entry-role">Interim Management</span>
+          <span class="entry-date">06/2010 - 03/2012</span>
+        </div>
+        <div class="entry-company">Kofferfunshop.de e.K.</div>
+        <ul>
+          <li data-i18n="r4b1">Vertretung des Geschäftsführers mit Personalverantwortung für 5 Mitarbeiter</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title" data-i18n="sec_education">Bildung</div>
+
+      <div class="edu-entry">
+        <div class="entry-header">
+          <span class="edu-degree" data-i18n="edu1">Wirtschaftsinformatik - Bachelor Professional (BA)</span>
+          <span class="edu-date">08/2021 - 01/2025</span>
+        </div>
+        <div class="edu-school">Berufskolleg Deutzer Freiheit, Köln</div>
+        <div class="edu-details" data-i18n="edu1m">Erfolgreich abgeschlossen | Berufsbegleitend</div>
+      </div>
+
+      <div class="edu-entry">
+        <div class="entry-header">
+          <span class="edu-degree">Banking and Finance</span>
+          <span class="edu-date">03/2014 - 12/2016</span>
+        </div>
+        <div class="edu-school">Technische Hochschule Köln</div>
+        <div class="edu-details" data-i18n="edu2m">4 Semester</div>
+      </div>
+
+      <div class="edu-entry">
+        <div class="entry-header">
+          <span class="edu-degree" data-i18n="edu3">Groß- und Außenhandelskaufmann (Außenhandel)</span>
+          <span class="edu-date">08/2008 - 03/2011</span>
+        </div>
+        <div class="edu-school">Josef-Dumont-Berufskolleg Köln & Bullmann GmbH</div>
+        <div class="edu-details" data-i18n="edu3m">IHK: 2,0 | Berufsschule: 1,9</div>
+      </div>
+
+      <div class="edu-entry">
+        <div class="entry-header">
+          <span class="edu-degree" data-i18n="edu4">Fachhochschulreife (Wirtschaft & Verwaltung)</span>
+          <span class="edu-date" data-i18n="edu4d">bis 06/2008</span>
+        </div>
+        <div class="edu-details" data-i18n="edu4m">Profil Marketing | Note: 2,8</div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+const i18n = {
+  de: {
+    sec_contact: "Kontakt", location: "Rösrath, Deutschland",
+    sec_skills: "Fachkenntnisse", sk_dev: "Entwicklung", sk_log: "Logistik", sk_zoll: "Zoll",
+    sec_languages: "Sprachen",
+    lv_native: "Muttersprache", lv_native2: "Muttersprache", lv_native3: "Muttersprache",
+    lv_fluent: "Verhandlungssicher", lv_fluent2: "Verhandlungssicher", lv_fluent3: "Verhandlungssicher",
+    lv_script: "Schrift",
+    l_de: "Deutsch", l_fr: "Französisch", l_en: "Englisch", l_ar: "Arabisch",
+    sec_projects: "Projekte",
+    p_orgmind: "— Enterprise-KI: RAG, Workflows, 25 Module",
+    p_immodular: "— Immobilienverwaltung: KI, OCR, 44+ Screens",
+    p_ep: "— Globale Export-Logistik: Zoll, Tracking, Analytics",
+    p_mythos: "— Content-Automation: Text-, Bild- & Videogenerierung",
+    p_flipflow: "— Social Media: Brand-Voice, 8-Plattform-Publishing",
+    p_ck: "— CRM-Tool: Kontaktpflege & Beziehungsmanagement",
+    headline: "Bachelor Professional Wirtschaftsinformatik | Export & Supply Chain | Full-Stack-Entwicklung",
+    sec_profile: "Profil",
+    profile: "Ergebnisorientierter Supply-Chain-Spezialist mit über 15 Jahren Erfahrung in Einkauf, internationaler Logistik und Prozessoptimierung. Steuere aktuell den Export für den gesamten afrikanischen Kontinent bei Takasago Europe GmbH. Abgeschlossenes Studium der Wirtschaftsinformatik (Bachelor Professional, 2025) ergänzt durch eigenständig entwickelte Full-Stack-Applikationen mit Python, React und KI-Integration. Verhandlungssicher in Deutsch, Englisch und Französisch sowie drei westafrikanischen Muttersprachen — ein entscheidender Vorteil in der internationalen Geschäftskommunikation.",
+    sec_experience: "Berufserfahrung",
+    role1: 'Assistent Transport Afrika <span class="badge-current">aktuell</span>',
+    date1: "11/2025 - heute",
+    r1b1: "Steuerung der gesamten Exportabwicklung für den afrikanischen Kontinent inkl. Dokumentation, Zollprozesse und Frachtkostenoptimierung",
+    r1b2: "Aufbau und Pflege eines Netzwerks aus Spediteuren, Partnern und Behörden in über 20 Zielländern",
+    r1b3: "Sicherstellung termingerechter Lieferungen durch proaktives Monitoring der Transportketten",
+    role2: "Einkäufer & Logistiker",
+    r2b1: "Disposition und Beschaffung von Materialien sowie Steuerung nationaler und internationaler Transporte über 8+ Jahre",
+    r2b2: "Verhandlung mit internationalen Lieferanten und Dienstleistern in Deutsch, Englisch und Französisch",
+    r2b3: "Aufbau eines KPI-basierten Controllings für Transport- und Lagerlogistik zur Kostensenkung",
+    r2b4: "Leitung von Optimierungsprojekten in cross-funktionalen Teams (Einkauf, Lager, Vertrieb, IT)",
+    r2b5: "Eigenständige Bearbeitung von Schadensfällen und Reklamationen inkl. Verhandlung mit Versicherungen",
+    role3: "Fuhrparkmanager",
+    r3b1: "Eigenverantwortliche Verwaltung eines Fuhrparks mit Leasingverträgen, Schadensmanagement und Kostenüberwachung",
+    r3b2: "Steuerung aller externen Partner (Leasinggesellschaften, Werkstätten, TÜV, Behörden)",
+    r3b3: "Einführung standardisierter Prozesse für Rechnungsprüfung und Fahrzeugbereitstellung",
+    r4b1: "Eigenständige Führung des Tagesgeschäfts mit Personalverantwortung für 5 Mitarbeiter während mehrwöchiger Abwesenheiten der Geschäftsführung",
+    sec_education: "Bildung",
+    edu1: "Wirtschaftsinformatik - Bachelor Professional (BA)",
+    edu1m: "Erfolgreich abgeschlossen | Berufsbegleitend neben Vollzeittätigkeit",
+    edu2m: "4 Semester | Grundlagen Finanzwirtschaft & Banking",
+    edu3: "Groß- und Außenhandelskaufmann (Außenhandel)",
+    edu3m: "IHK: 2,0 | Berufsschule: 1,9",
+    edu4: "Fachhochschulreife (Wirtschaft & Verwaltung)",
+    edu4d: "bis 06/2008",
+    edu4m: "Profil Marketing | Note: 2,8"
+  },
+  en: {
+    sec_contact: "Contact", location: "Rösrath, Germany",
+    sec_skills: "Expertise", sk_dev: "Development", sk_log: "Logistics", sk_zoll: "Customs",
+    sec_languages: "Languages",
+    lv_native: "Native", lv_native2: "Native", lv_native3: "Native",
+    lv_fluent: "Fluent", lv_fluent2: "Fluent", lv_fluent3: "Fluent",
+    lv_script: "Script",
+    l_de: "German", l_fr: "French", l_en: "English", l_ar: "Arabic",
+    sec_projects: "Projects",
+    p_orgmind: "— Enterprise AI: RAG, workflows, 25 modules",
+    p_immodular: "— Property management: AI, OCR, 44+ screens",
+    p_ep: "— Global export logistics: customs, tracking, analytics",
+    p_mythos: "— Content automation: text, image & video generation",
+    p_flipflow: "— Social media: brand voice, 8-platform publishing",
+    p_ck: "— CRM tool: contact nurturing & relationship mgmt",
+    headline: "Bachelor Professional Business Informatics | Export & Supply Chain | Full-Stack Development",
+    sec_profile: "Profile",
+    profile: "Results-driven supply chain professional with 15+ years of experience in procurement, international logistics, and process optimization. Currently managing exports across the entire African continent at Takasago Europe GmbH. Completed a degree in Business Informatics (Bachelor Professional, 2025) and independently developed full-stack applications using Python, React, and AI integration. Fluent in German, English, and French plus three West African native languages — a decisive edge in international business communication.",
+    sec_experience: "Professional Experience",
+    role1: 'Transport Assistant Africa <span class="badge-current">current</span>',
+    date1: "11/2025 - present",
+    r1b1: "Managing end-to-end export operations for the African continent incl. documentation, customs processes, and freight cost optimization",
+    r1b2: "Building and maintaining a network of freight forwarders, partners, and authorities across 20+ target countries",
+    r1b3: "Ensuring on-time deliveries through proactive transport chain monitoring and issue resolution",
+    role2: "Procurement & Logistics Specialist",
+    r2b1: "Procurement and materials management incl. national and international transport coordination over 8+ years",
+    r2b2: "Negotiation with international suppliers and service providers in German, English, and French",
+    r2b3: "Established KPI-based controlling for transport and warehouse logistics to drive cost reduction",
+    r2b4: "Led optimization projects in cross-functional teams (procurement, warehouse, sales, IT)",
+    r2b5: "Independent handling of damage claims and complaints incl. insurance negotiations",
+    role3: "Fleet Manager",
+    r3b1: "Full ownership of fleet management incl. leasing contracts, damage handling, and cost monitoring",
+    r3b2: "Managed all external partners (leasing companies, workshops, vehicle inspections, authorities)",
+    r3b3: "Implemented standardized processes for invoice verification and vehicle provisioning",
+    r4b1: "Independently managed daily operations with responsibility for 5 employees during multi-week absences of the managing director",
+    sec_education: "Education",
+    edu1: "Business Informatics - Bachelor Professional (BA)",
+    edu1m: "Successfully completed | Part-time alongside full-time employment",
+    edu2m: "4 semesters | Fundamentals of Finance & Banking",
+    edu3: "Foreign Trade Merchant (specialization: foreign trade)",
+    edu3m: "Chamber of Commerce: 2.0 | College: 1.9",
+    edu4: "University Entrance Qualification (Business & Administration)",
+    edu4d: "until 06/2008",
+    edu4m: "Marketing profile | Grade: 2.8"
+  },
+  fr: {
+    sec_contact: "Contact", location: "Rösrath, Allemagne",
+    sec_skills: "Compétences", sk_dev: "Développement", sk_log: "Logistique", sk_zoll: "Douanes",
+    sec_languages: "Langues",
+    lv_native: "Maternelle", lv_native2: "Maternelle", lv_native3: "Maternelle",
+    lv_fluent: "Courant", lv_fluent2: "Courant", lv_fluent3: "Courant",
+    lv_script: "Écriture",
+    l_de: "Allemand", l_fr: "Français", l_en: "Anglais", l_ar: "Arabe",
+    sec_projects: "Projets",
+    p_orgmind: "— IA entreprise : RAG, workflows, 25 modules",
+    p_immodular: "— Gestion immobilière : IA, OCR, 44+ écrans",
+    p_ep: "— Logistique export mondiale : douanes, suivi, analytics",
+    p_mythos: "— Automation contenu : génération texte, image & vidéo",
+    p_flipflow: "— Médias sociaux : brand voice, publication 8 plateformes",
+    p_ck: "— Outil CRM : gestion relationnelle & contacts",
+    headline: "Bachelor Professional Informatique de Gestion | Export & Supply Chain | Développement Full-Stack",
+    sec_profile: "Profil",
+    profile: "Spécialiste supply chain orienté résultats avec plus de 15 ans d'expérience en achats, logistique internationale et optimisation des processus. Pilote actuellement les exportations sur l'ensemble du continent africain chez Takasago Europe GmbH. Diplômé en informatique de gestion (Bachelor Professional, 2025) et développeur full-stack autodidacte (Python, React, IA). Maîtrise courante de l'allemand, l'anglais et le français ainsi que trois langues maternelles ouest-africaines — un atout décisif dans la communication commerciale internationale.",
+    sec_experience: "Expérience Professionnelle",
+    role1: 'Assistant Transport Afrique <span class="badge-current">actuel</span>',
+    date1: "11/2025 - aujourd'hui",
+    r1b1: "Pilotage complet des opérations d'export pour le continent africain : documentation, douanes et optimisation des coûts de fret",
+    r1b2: "Développement et maintien d'un réseau de transitaires, partenaires et autorités dans plus de 20 pays",
+    r1b3: "Garantie des délais de livraison par un suivi proactif des chaînes de transport",
+    role2: "Acheteur & Logisticien",
+    r2b1: "Approvisionnement et gestion des matériaux, coordination des transports nationaux et internationaux sur 8+ ans",
+    r2b2: "Négociation avec fournisseurs et prestataires internationaux en allemand, anglais et français",
+    r2b3: "Mise en place d'un contrôle de gestion basé sur des KPI pour la logistique transport et entreposage",
+    r2b4: "Direction de projets d'optimisation au sein d'équipes transversales (achats, entrepôt, ventes, IT)",
+    r2b5: "Gestion autonome des sinistres et réclamations, y compris négociation avec les assurances",
+    role3: "Gestionnaire de Flotte",
+    r3b1: "Gestion autonome du parc automobile : contrats de leasing, sinistres et suivi budgétaire",
+    r3b2: "Coordination de l'ensemble des partenaires externes (leasing, garages, contrôle technique, autorités)",
+    r3b3: "Introduction de processus standardisés pour la vérification des factures et la mise à disposition des véhicules",
+    r4b1: "Direction autonome des opérations quotidiennes avec responsabilité de 5 collaborateurs lors d'absences prolongées de la direction",
+    sec_education: "Formation",
+    edu1: "Informatique de Gestion - Bachelor Professional (BA)",
+    edu1m: "Diplômé avec succès | En parallèle d'un emploi à temps plein",
+    edu2m: "4 semestres | Fondamentaux de la finance et du banking",
+    edu3: "Commerce de gros et international (commerce extérieur)",
+    edu3m: "CCI : 2,0 | École professionnelle : 1,9",
+    edu4: "Baccalauréat (Économie & Administration)",
+    edu4d: "jusqu'en 06/2008",
+    edu4m: "Profil Marketing | Note : 2,8"
+  }
+};
+
+function switchLang(lang) {
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.lang-btn[onclick="switchLang('${lang}')"]`).classList.add('active');
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (i18n[lang] && i18n[lang][key]) el.innerHTML = i18n[lang][key];
+  });
+}
+
+switchLang('de');
+</script>
+
+</body>
+</html>
