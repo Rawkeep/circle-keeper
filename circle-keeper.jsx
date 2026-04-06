@@ -30,6 +30,21 @@ const REACH_ACTIONS = [
   { id: "video", label: "Videocall", icon: "🖥️", effort: 3 },
 ];
 
+const SOCIAL_ACTIONS = [
+  { id: "whatsapp",  label: "WhatsApp",    icon: "💚", effort: 1, field: "whatsapp",  placeholder: "+49... oder Nummer" },
+  { id: "telegram",  label: "Telegram",    icon: "✈️", effort: 1, field: "telegram",  placeholder: "@username" },
+  { id: "signal",    label: "Signal",      icon: "🔵", effort: 1, field: "signal",    placeholder: "+49..." },
+  { id: "instagram", label: "Instagram",   icon: "📸", effort: 0, field: "instagram", placeholder: "@username" },
+  { id: "linkedin",  label: "LinkedIn",    icon: "🔗", effort: 1, field: "linkedin",  placeholder: "Profil-URL oder Username" },
+  { id: "twitter",   label: "X / Twitter", icon: "𝕏",  effort: 0, field: "twitter",   placeholder: "@handle" },
+  { id: "facebook",  label: "Facebook",    icon: "👤", effort: 1, field: "facebook",  placeholder: "Profil-URL oder Username" },
+  { id: "tiktok",    label: "TikTok",      icon: "🎵", effort: 0, field: "tiktok",    placeholder: "@username" },
+  { id: "snapchat",  label: "Snapchat",    icon: "👻", effort: 0, field: "snapchat",  placeholder: "Username" },
+  { id: "xing",      label: "XING",        icon: "🅧", effort: 1, field: "xing",      placeholder: "Profil-URL oder Username" },
+  { id: "discord",   label: "Discord",     icon: "🎮", effort: 1, field: "discord",   placeholder: "Username#1234" },
+  { id: "threads",   label: "Threads",     icon: "🧵", effort: 0, field: "threads",   placeholder: "@username" },
+];
+
 const INCOMING_ACTIONS = [
   { id: "in_call", label: "Hat angerufen", icon: "📲" },
   { id: "in_text", label: "Hat geschrieben", icon: "💌" },
@@ -210,6 +225,8 @@ export default function CircleKeeper() {
   const [formTags, setFormTags] = useState([]);
   const [formPhone, setFormPhone] = useState("");
   const [formEmail, setFormEmail] = useState("");
+  const [formSocials, setFormSocials] = useState({});
+  const [showSocialFields, setShowSocialFields] = useState(false);
 
   // Load
   useEffect(() => {
@@ -264,6 +281,7 @@ export default function CircleKeeper() {
       tags: formTags,
       phone: formPhone,
       email: formEmail,
+      socials: { ...formSocials },
       lastContact: null,
       lastIncoming: null,
       history: [],
@@ -287,6 +305,7 @@ export default function CircleKeeper() {
       role: formRole, company: formCompany,
       birthday: formBirthday || c.birthday,
       tags: formTags, phone: formPhone, email: formEmail,
+      socials: { ...formSocials },
     } : c);
     setContacts(updated);
     persist(updated);
@@ -305,35 +324,74 @@ export default function CircleKeeper() {
   };
 
   // ─── Deep-Link Launcher ─────────────────────────────────────────────
+  const _s = (c, key) => (c.socials || {})[key] || "";
+  const _clean = (v) => v.replace(/^@/, "");
+
   const ACTION_LINKS = {
-    call:  (c) => c.phone ? `tel:${c.phone}` : null,
-    text:  (c) => c.phone ? `sms:${c.phone}` : null,
-    email: (c) => c.email ? `mailto:${c.email}` : null,
-    video: (c) => c.phone ? `facetime:${c.phone}` : (c.email ? `facetime:${c.email}` : null),
-    voice: (c) => c.phone ? `tel:${c.phone}` : null,
+    call:      (c) => c.phone ? `tel:${c.phone}` : null,
+    text:      (c) => c.phone ? `sms:${c.phone}` : null,
+    email:     (c) => c.email ? `mailto:${c.email}` : null,
+    video:     (c) => c.phone ? `facetime:${c.phone}` : (c.email ? `facetime:${c.email}` : null),
+    voice:     (c) => c.phone ? `tel:${c.phone}` : null,
+    whatsapp:  (c) => { const v = _s(c,"whatsapp") || c.phone; return v ? `https://wa.me/${v.replace(/[^0-9+]/g,"")}` : null; },
+    telegram:  (c) => { const v = _s(c,"telegram"); return v ? `https://t.me/${_clean(v)}` : null; },
+    signal:    (c) => { const v = _s(c,"signal") || c.phone; return v ? `https://signal.me/#p/${v}` : null; },
+    instagram: (c) => { const v = _s(c,"instagram"); return v ? `https://instagram.com/${_clean(v)}` : null; },
+    linkedin:  (c) => { const v = _s(c,"linkedin"); return v ? (v.startsWith("http") ? v : `https://linkedin.com/in/${_clean(v)}`) : null; },
+    twitter:   (c) => { const v = _s(c,"twitter"); return v ? `https://x.com/${_clean(v)}` : null; },
+    facebook:  (c) => { const v = _s(c,"facebook"); return v ? (v.startsWith("http") ? v : `https://facebook.com/${_clean(v)}`) : null; },
+    tiktok:    (c) => { const v = _s(c,"tiktok"); return v ? `https://tiktok.com/@${_clean(v)}` : null; },
+    snapchat:  (c) => { const v = _s(c,"snapchat"); return v ? `https://snapchat.com/add/${_clean(v)}` : null; },
+    xing:      (c) => { const v = _s(c,"xing"); return v ? (v.startsWith("http") ? v : `https://xing.com/profile/${_clean(v)}`) : null; },
+    discord:   (c) => { const v = _s(c,"discord"); return v ? `https://discord.com/users/${_clean(v)}` : null; },
+    threads:   (c) => { const v = _s(c,"threads"); return v ? `https://threads.net/@${_clean(v)}` : null; },
   };
 
   const ACTION_LABELS_DE = {
-    call:  (c) => `${c.name} anrufen?`,
-    text:  (c) => `Nachricht an ${c.name} schreiben?`,
-    email: (c) => `E-Mail an ${c.name} senden?`,
-    video: (c) => `Videocall mit ${c.name} starten?`,
-    voice: (c) => `Sprachnachricht an ${c.name}?`,
-    meet:  (c) => `Treffen mit ${c.name} loggen?`,
-    gift:  (c) => `Überraschung für ${c.name} loggen?`,
-    react: (c) => `Reaktion an ${c.name} loggen?`,
+    call:      (c) => `${c.name} anrufen?`,
+    text:      (c) => `Nachricht an ${c.name} schreiben?`,
+    email:     (c) => `E-Mail an ${c.name} senden?`,
+    video:     (c) => `Videocall mit ${c.name} starten?`,
+    voice:     (c) => `Sprachnachricht an ${c.name}?`,
+    meet:      (c) => `Treffen mit ${c.name} loggen?`,
+    gift:      (c) => `Überraschung für ${c.name} loggen?`,
+    react:     (c) => `Reaktion an ${c.name} loggen?`,
+    whatsapp:  (c) => `WhatsApp an ${c.name} öffnen?`,
+    telegram:  (c) => `Telegram-Chat mit ${c.name} öffnen?`,
+    signal:    (c) => `Signal-Chat mit ${c.name} öffnen?`,
+    instagram: (c) => `Instagram-Profil von ${c.name} öffnen?`,
+    linkedin:  (c) => `LinkedIn-Profil von ${c.name} öffnen?`,
+    twitter:   (c) => `X/Twitter von ${c.name} öffnen?`,
+    facebook:  (c) => `Facebook von ${c.name} öffnen?`,
+    tiktok:    (c) => `TikTok von ${c.name} öffnen?`,
+    snapchat:  (c) => `Snapchat von ${c.name} öffnen?`,
+    xing:      (c) => `XING-Profil von ${c.name} öffnen?`,
+    discord:   (c) => `Discord-Profil von ${c.name} öffnen?`,
+    threads:   (c) => `Threads von ${c.name} öffnen?`,
   };
 
   const ACTION_MISSING_DE = {
-    call:  "Keine Telefonnummer hinterlegt. Trotzdem als Anruf loggen?",
-    text:  "Keine Telefonnummer hinterlegt. Trotzdem als Nachricht loggen?",
-    email: "Keine E-Mail-Adresse hinterlegt. Trotzdem loggen?",
-    video: "Keine Telefonnummer/E-Mail hinterlegt. Trotzdem loggen?",
-    voice: "Keine Telefonnummer hinterlegt. Trotzdem loggen?",
+    call:      "Keine Telefonnummer hinterlegt. Trotzdem als Anruf loggen?",
+    text:      "Keine Telefonnummer hinterlegt. Trotzdem als Nachricht loggen?",
+    email:     "Keine E-Mail-Adresse hinterlegt. Trotzdem loggen?",
+    video:     "Keine Telefonnummer/E-Mail hinterlegt. Trotzdem loggen?",
+    voice:     "Keine Telefonnummer hinterlegt. Trotzdem loggen?",
+    whatsapp:  "Kein WhatsApp hinterlegt. Trotzdem loggen?",
+    telegram:  "Kein Telegram hinterlegt. Trotzdem loggen?",
+    signal:    "Kein Signal hinterlegt. Trotzdem loggen?",
+    instagram: "Kein Instagram hinterlegt. Trotzdem loggen?",
+    linkedin:  "Kein LinkedIn hinterlegt. Trotzdem loggen?",
+    twitter:   "Kein X/Twitter hinterlegt. Trotzdem loggen?",
+    facebook:  "Kein Facebook hinterlegt. Trotzdem loggen?",
+    tiktok:    "Kein TikTok hinterlegt. Trotzdem loggen?",
+    snapchat:  "Kein Snapchat hinterlegt. Trotzdem loggen?",
+    xing:      "Kein XING hinterlegt. Trotzdem loggen?",
+    discord:   "Kein Discord hinterlegt. Trotzdem loggen?",
+    threads:   "Kein Threads hinterlegt. Trotzdem loggen?",
   };
 
   const initiateAction = (contact, actionId, note = "", topic = "") => {
-    const action = REACH_ACTIONS.find(a => a.id === actionId);
+    const action = REACH_ACTIONS.find(a => a.id === actionId) || SOCIAL_ACTIONS.find(a => a.id === actionId);
     if (!action) return;
     const linkFn = ACTION_LINKS[actionId];
     const link = linkFn ? linkFn(contact) : null;
@@ -353,7 +411,7 @@ export default function CircleKeeper() {
   const cancelAction = () => setPendingAction(null);
 
   const logReach = (contact, actionId, note = "", topic = "") => {
-    const action = REACH_ACTIONS.find(a => a.id === actionId);
+    const action = REACH_ACTIONS.find(a => a.id === actionId) || SOCIAL_ACTIONS.find(a => a.id === actionId);
     const entry = {
       action: actionId, label: action.label, icon: action.icon,
       date: new Date().toISOString(), incoming: false,
@@ -406,6 +464,7 @@ export default function CircleKeeper() {
     setFormNote(""); setFormEmoji(""); setFormRole("personal");
     setFormCompany(""); setFormBirthday(""); setFormTags([]);
     setFormPhone(""); setFormEmail("");
+    setFormSocials({}); setShowSocialFields(false);
   };
 
   const openEdit = (c) => {
@@ -413,6 +472,8 @@ export default function CircleKeeper() {
     setFormNote(c.note || ""); setFormEmoji(c.emoji); setFormRole(c.role || "personal");
     setFormCompany(c.company || ""); setFormBirthday(c.birthday || "");
     setFormTags(c.tags || []); setFormPhone(c.phone || ""); setFormEmail(c.email || "");
+    setFormSocials(c.socials || {});
+    setShowSocialFields(Object.values(c.socials || {}).some(v => v));
     setEditMode(true);
   };
 
@@ -789,6 +850,29 @@ export default function CircleKeeper() {
               );
             })}
           </div>
+
+          {/* Social Media Actions */}
+          {(() => {
+            const activeSocials = SOCIAL_ACTIONS.filter(a => {
+              const val = (c.socials || {})[a.field];
+              return val && val.trim();
+            });
+            if (!activeSocials.length) return null;
+            return (
+              <>
+                <h3 style={{ ...styles.sectionTitle, fontSize: 15, marginTop: 16, marginBottom: 8 }}>Social Media</h3>
+                <div style={styles.actionGrid}>
+                  {activeSocials.map(a => (
+                    <button key={a.id} style={styles.actionBtn}
+                      onClick={() => initiateAction(c, a.id, logNote, logTopic)}>
+                      <span style={{ fontSize: 22 }}>{a.icon}</span>
+                      <span style={styles.actionLabel}>{a.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </>
+            );
+          })()}
         </div>
 
         {/* Log incoming */}
@@ -833,17 +917,30 @@ export default function CircleKeeper() {
         {/* ─── Action Confirmation Dialog (Detail View) ─── */}
         {pendingAction && (() => {
           const { contact, actionId, link } = pendingAction;
-          const action = REACH_ACTIONS.find(a => a.id === actionId);
+          const action = REACH_ACTIONS.find(a => a.id === actionId) || SOCIAL_ACTIONS.find(a => a.id === actionId);
           const labelFn = ACTION_LABELS_DE[actionId];
           const headline = labelFn ? labelFn(contact) : `${action.label} mit ${contact.name}?`;
           const missingMsg = !link && ACTION_MISSING_DE[actionId];
           const hasLink = !!link;
+          const socialVal = (contact.socials || {})[actionId] || "";
           const linkLabel = {
             call: `📞 ${contact.phone}`,
             text: `💬 ${contact.phone}`,
             email: `📧 ${contact.email}`,
             video: `🖥️ ${contact.phone || contact.email}`,
             voice: `🎙️ ${contact.phone}`,
+            whatsapp: `💚 ${socialVal || contact.phone}`,
+            telegram: `✈️ ${socialVal}`,
+            signal: `🔵 ${socialVal || contact.phone}`,
+            instagram: `📸 ${socialVal}`,
+            linkedin: `🔗 ${socialVal}`,
+            twitter: `𝕏 ${socialVal}`,
+            facebook: `👤 ${socialVal}`,
+            tiktok: `🎵 ${socialVal}`,
+            snapchat: `👻 ${socialVal}`,
+            xing: `🅧 ${socialVal}`,
+            discord: `🎮 ${socialVal}`,
+            threads: `🧵 ${socialVal}`,
           }[actionId];
 
           return (
@@ -959,6 +1056,28 @@ export default function CircleKeeper() {
             <label style={styles.label}>E-Mail</label>
             <input style={styles.input} type="email" value={formEmail} onChange={e => setFormEmail(e.target.value)} placeholder="mail@..." />
           </div>
+        </div>
+
+        <div style={styles.formGroup}>
+          <button style={{ ...styles.topicChip, width: "100%", textAlign: "center", padding: "10px", fontSize: 13 }}
+            onClick={() => setShowSocialFields(!showSocialFields)}>
+            {showSocialFields ? "Social Media ausblenden ▲" : "📱 Social Media hinzufügen ▼"}
+          </button>
+          {showSocialFields && (
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 10 }}>
+              {SOCIAL_ACTIONS.map(s => (
+                <div key={s.id} style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                  <label style={{ fontSize: 11, color: "#8B7E74", fontFamily: "'Outfit', sans-serif" }}>
+                    {s.icon} {s.label}
+                  </label>
+                  <input style={{ ...styles.input, fontSize: 12, padding: "8px 10px" }}
+                    value={formSocials[s.field] || ""}
+                    onChange={e => setFormSocials({ ...formSocials, [s.field]: e.target.value })}
+                    placeholder={s.placeholder} />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div style={styles.formGroup}>
@@ -1243,7 +1362,7 @@ export default function CircleKeeper() {
       {/* ─── Action Confirmation Dialog ─── */}
       {pendingAction && (() => {
         const { contact, actionId, link } = pendingAction;
-        const action = REACH_ACTIONS.find(a => a.id === actionId);
+        const action = REACH_ACTIONS.find(a => a.id === actionId) || SOCIAL_ACTIONS.find(a => a.id === actionId);
         const labelFn = ACTION_LABELS_DE[actionId];
         const headline = labelFn ? labelFn(contact) : `${action.label} mit ${contact.name}?`;
         const missingMsg = !link && ACTION_MISSING_DE[actionId];
