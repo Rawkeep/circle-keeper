@@ -3,20 +3,20 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 // ─── CONSTANTS ───────────────────────────────────────────────────────────────
 
 const CATEGORIES = [
-  { id: "inner", label: "Innerer Kreis", emoji: "✦", color: "#D4644A", bg: "#FFF0EC", desc: "Familie & Engste" },
-  { id: "close", label: "Enge Freunde", emoji: "◈", color: "#E8A849", bg: "#FFF8EC", desc: "Die du nicht verlieren willst" },
-  { id: "network", label: "Netzwerk", emoji: "◇", color: "#5B8A72", bg: "#EDFAF3", desc: "Kollegen & Mentoren" },
-  { id: "dormant", label: "Schlafend", emoji: "○", color: "#8B8B9E", bg: "#F3F3F8", desc: "Eingeschlafene Kontakte" },
+  { id: "inner", label: "Innerer Kreis", emoji: "✦", color: "#E11D48", bg: "#FFF1F2", desc: "Familie & Engste" },
+  { id: "close", label: "Enge Freunde", emoji: "◈", color: "#D97706", bg: "#FFFBEB", desc: "Die du nicht verlieren willst" },
+  { id: "network", label: "Netzwerk", emoji: "◇", color: "#059669", bg: "#ECFDF5", desc: "Kollegen & Mentoren" },
+  { id: "dormant", label: "Schlafend", emoji: "○", color: "#9CA3AF", bg: "#F3F4F6", desc: "Eingeschlafene Kontakte" },
 ];
 
 const ROLES = [
-  { id: "personal", label: "Persönlich", icon: "♡", color: "#E8A849" },
-  { id: "key_account", label: "Key Account", icon: "★", color: "#D4644A" },
-  { id: "client", label: "Kunde", icon: "◆", color: "#5B8A72" },
-  { id: "prospect", label: "Interessent", icon: "◇", color: "#7B9EC4" },
-  { id: "mentor", label: "Mentor", icon: "▲", color: "#9B7EC4" },
-  { id: "colleague", label: "Kollege", icon: "■", color: "#6B8A9E" },
-  { id: "partner", label: "Partner/Dienstleister", icon: "◎", color: "#8B7E74" },
+  { id: "personal", label: "Persönlich", icon: "♡", color: "#F59E0B" },
+  { id: "key_account", label: "Key Account", icon: "★", color: "#EF4444" },
+  { id: "client", label: "Kunde", icon: "◆", color: "#10B981" },
+  { id: "prospect", label: "Interessent", icon: "◇", color: "#3B82F6" },
+  { id: "mentor", label: "Mentor", icon: "▲", color: "#8B5CF6" },
+  { id: "colleague", label: "Kollege", icon: "■", color: "#06B6D4" },
+  { id: "partner", label: "Partner/Dienstleister", icon: "◎", color: "#78716C" },
 ];
 
 const REACH_ACTIONS = [
@@ -119,7 +119,7 @@ function getBalance(contact) {
   if (ratio > 0.55) return { ratio, label: "Du initiierst etwas mehr", color: "#8BC34A", outgoing, incoming, icon: "↗" };
   if (ratio >= 0.45) return { ratio, label: "Ausgeglichen", color: "#4CAF50", outgoing, incoming, icon: "⇄" };
   if (ratio >= 0.25) return { ratio, label: "Sie initiieren etwas mehr", color: "#8BC34A", outgoing, incoming, icon: "↙" };
-  return { ratio, label: "Sie geben mehr", color: "#7B9EC4", outgoing, incoming, icon: "↙" };
+  return { ratio, label: "Sie geben mehr", color: "#0EA5E9", outgoing, incoming, icon: "↙" };
 }
 
 function formatDate(dateStr) {
@@ -535,7 +535,7 @@ export default function CircleKeeper() {
   if (!loaded) return (
     <div style={styles.loadWrap}>
       <div style={styles.loadPulse}>◉</div>
-      <p style={{ fontFamily: "'DM Serif Display', Georgia, serif", color: "#5B4A3F", fontSize: 18 }}>Lade dein Netzwerk...</p>
+      <p style={{ fontFamily: "'DM Serif Display', Georgia, serif", color: "#44403C", fontSize: 18 }}>Lade dein Netzwerk...</p>
     </div>
   );
 
@@ -566,7 +566,7 @@ export default function CircleKeeper() {
             <div style={{ fontSize: 48, fontFamily: "'DM Serif Display', Georgia, serif", color: networkHealth.score >= 60 ? "#4CAF50" : networkHealth.score >= 40 ? "#FFC107" : "#F44336" }}>
               {networkHealth.score}
             </div>
-            <p style={{ fontSize: 13, color: "#8B7E74", margin: "4px 0 16px" }}>Netzwerk-Gesundheit</p>
+            <p style={{ fontSize: 13, color: "#78716C", margin: "4px 0 16px" }}>Netzwerk-Gesundheit</p>
             <div style={styles.healthBar}>
               {[
                 { count: networkHealth.thriving, color: "#4CAF50", label: "Blüht" },
@@ -599,16 +599,16 @@ export default function CircleKeeper() {
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
               <div style={{ flex: 1 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                  <span style={{ fontSize: 12, color: "#5B8A72" }}>Du → {networkHealth.totalOutgoing}</span>
-                  <span style={{ fontSize: 12, color: "#7B9EC4" }}>{networkHealth.totalIncoming} ← Sie</span>
+                  <span style={{ fontSize: 12, color: "#059669" }}>Du → {networkHealth.totalOutgoing}</span>
+                  <span style={{ fontSize: 12, color: "#0EA5E9" }}>{networkHealth.totalIncoming} ← Sie</span>
                 </div>
                 <div style={{ display: "flex", height: 8, borderRadius: 4, overflow: "hidden" }}>
-                  <div style={{ flex: networkHealth.totalOutgoing || 1, background: "#5B8A72" }} />
-                  <div style={{ flex: networkHealth.totalIncoming || 1, background: "#7B9EC4" }} />
+                  <div style={{ flex: networkHealth.totalOutgoing || 1, background: "#059669" }} />
+                  <div style={{ flex: networkHealth.totalIncoming || 1, background: "#0EA5E9" }} />
                 </div>
               </div>
             </div>
-            <p style={{ fontSize: 12, color: "#8B7E74" }}>
+            <p style={{ fontSize: 12, color: "#78716C" }}>
               {networkHealth.balancedCount} von {contacts.filter(c => (c.history || []).length >= 2).length} aktiven Kontakten sind ausgeglichen
             </p>
           </div>
@@ -623,12 +623,12 @@ export default function CircleKeeper() {
                 <span style={{ fontSize: 16 }}>{c.emoji}</span>
                 <span style={{ flex: 1, fontSize: 13, fontWeight: 500, textAlign: "left" }}>{c.name}</span>
                 <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <span style={{ fontSize: 11, color: "#5B8A72" }}>{c.balance.outgoing}↗</span>
+                  <span style={{ fontSize: 11, color: "#059669" }}>{c.balance.outgoing}↗</span>
                   <div style={{ width: 48, height: 6, borderRadius: 3, overflow: "hidden", display: "flex" }}>
-                    <div style={{ flex: c.balance.outgoing || 1, background: "#5B8A72" }} />
-                    <div style={{ flex: c.balance.incoming || 1, background: "#7B9EC4" }} />
+                    <div style={{ flex: c.balance.outgoing || 1, background: "#059669" }} />
+                    <div style={{ flex: c.balance.incoming || 1, background: "#0EA5E9" }} />
                   </div>
-                  <span style={{ fontSize: 11, color: "#7B9EC4" }}>↙{c.balance.incoming}</span>
+                  <span style={{ fontSize: 11, color: "#0EA5E9" }}>↙{c.balance.incoming}</span>
                 </div>
               </button>
             ))}
@@ -643,10 +643,10 @@ export default function CircleKeeper() {
               <div key={r.id} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
                 <span style={{ fontSize: 14, width: 20, textAlign: "center" }}>{r.icon}</span>
                 <span style={{ flex: 1, fontSize: 13 }}>{r.label}</span>
-                <div style={{ width: 80, height: 6, borderRadius: 3, background: "#EDE4D8", overflow: "hidden" }}>
+                <div style={{ width: 80, height: 6, borderRadius: 3, background: "#E7E5E4", overflow: "hidden" }}>
                   <div style={{ height: "100%", width: `${(r.count / contacts.length) * 100}%`, background: r.color, borderRadius: 3 }} />
                 </div>
-                <span style={{ fontSize: 12, color: "#8B7E74", width: 20, textAlign: "right" }}>{r.count}</span>
+                <span style={{ fontSize: 12, color: "#78716C", width: 20, textAlign: "right" }}>{r.count}</span>
               </div>
             ))}
           </div>
@@ -659,7 +659,7 @@ export default function CircleKeeper() {
             <button key={c.id} style={styles.balanceRow} onClick={() => { setSelectedContact(c); setView("detail"); }}>
               <span style={{ fontSize: 16 }}>{c.emoji}</span>
               <span style={{ flex: 1, fontSize: 13, fontWeight: 500, textAlign: "left" }}>{c.name}</span>
-              <span style={{ fontSize: 12, color: "#D4644A" }}>{formatDate(c.lastContact)}</span>
+              <span style={{ fontSize: 12, color: "#E11D48" }}>{formatDate(c.lastContact)}</span>
             </button>
           ))}
         </div>
@@ -704,13 +704,13 @@ export default function CircleKeeper() {
             <h2 style={styles.headerTitle}>Eingehend loggen</h2>
           </div>
           <div style={{ padding: "8px 24px" }}>
-            <p style={{ fontSize: 14, color: "#8B7E74", marginBottom: 16 }}>{c.emoji} {c.name} hat sich bei dir gemeldet</p>
+            <p style={{ fontSize: 14, color: "#78716C", marginBottom: 16 }}>{c.emoji} {c.name} hat sich bei dir gemeldet</p>
 
             <div style={{ marginBottom: 16 }}>
               <label style={styles.label}>Gesprächsthema (optional)</label>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 }}>
                 {CONVERSATION_TOPICS.map(t => (
-                  <button key={t} style={{ ...styles.topicChip, ...(logTopic === t ? { background: "#5B4A3F", color: "#FAF5EF", borderColor: "#5B4A3F" } : {}) }}
+                  <button key={t} style={{ ...styles.topicChip, ...(logTopic === t ? { background: "#18181B", color: "#FAFAF9", borderColor: "#18181B" } : {}) }}
                     onClick={() => setLogTopic(logTopic === t ? "" : t)}>{t}</button>
                 ))}
               </div>
@@ -751,7 +751,7 @@ export default function CircleKeeper() {
             <span style={{ ...styles.catBadge, background: cat.bg, color: cat.color }}>{cat.emoji} {cat.label}</span>
             {role && <span style={{ ...styles.catBadge, background: role.color + "18", color: role.color }}>{role.icon} {role.label}</span>}
           </div>
-          {c.company && <p style={{ fontSize: 13, color: "#8B7E74", margin: "4px 0" }}>{c.company}</p>}
+          {c.company && <p style={{ fontSize: 13, color: "#78716C", margin: "4px 0" }}>{c.company}</p>}
 
           {/* Warmth bar */}
           <div style={styles.warmthBarOuter}>
@@ -770,12 +770,12 @@ export default function CircleKeeper() {
             <span style={{ fontSize: 12, color: balance.color, fontWeight: 600 }}>{balance.icon} {balance.label}</span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: 11, color: "#5B8A72" }}>Du {balance.outgoing}×</span>
+            <span style={{ fontSize: 11, color: "#059669" }}>Du {balance.outgoing}×</span>
             <div style={{ flex: 1, height: 6, borderRadius: 3, overflow: "hidden", display: "flex" }}>
-              <div style={{ flex: balance.outgoing || 1, background: "#5B8A72", transition: "flex 0.6s" }} />
-              <div style={{ flex: balance.incoming || 1, background: "#7B9EC4", transition: "flex 0.6s" }} />
+              <div style={{ flex: balance.outgoing || 1, background: "#059669", transition: "flex 0.6s" }} />
+              <div style={{ flex: balance.incoming || 1, background: "#0EA5E9", transition: "flex 0.6s" }} />
             </div>
-            <span style={{ fontSize: 11, color: "#7B9EC4" }}>{balance.incoming}× Sie</span>
+            <span style={{ fontSize: 11, color: "#0EA5E9" }}>{balance.incoming}× Sie</span>
           </div>
         </div>
 
@@ -805,7 +805,7 @@ export default function CircleKeeper() {
             {TAGS.map(t => (
               <button key={t} style={{
                 ...styles.topicChip,
-                ...((c.tags || []).includes(t) ? { background: "#5B4A3F", color: "#FAF5EF", borderColor: "#5B4A3F" } : {}),
+                ...((c.tags || []).includes(t) ? { background: "#18181B", color: "#FAFAF9", borderColor: "#18181B" } : {}),
               }} onClick={() => toggleTag(c, t)}>{t}</button>
             ))}
           </div>
@@ -818,10 +818,10 @@ export default function CircleKeeper() {
           {showLogOptions && (
             <div style={{ marginBottom: 12 }}>
               <div style={{ marginBottom: 8 }}>
-                <label style={{ fontSize: 11, color: "#8B7E74" }}>Thema</label>
+                <label style={{ fontSize: 11, color: "#78716C" }}>Thema</label>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 4 }}>
                   {CONVERSATION_TOPICS.slice(0, 8).map(t => (
-                    <button key={t} style={{ ...styles.topicChip, fontSize: 10, padding: "3px 8px", ...(logTopic === t ? { background: "#5B4A3F", color: "#FAF5EF", borderColor: "#5B4A3F" } : {}) }}
+                    <button key={t} style={{ ...styles.topicChip, fontSize: 10, padding: "3px 8px", ...(logTopic === t ? { background: "#18181B", color: "#FAFAF9", borderColor: "#18181B" } : {}) }}
                       onClick={() => setLogTopic(logTopic === t ? "" : t)}>{t}</button>
                   ))}
                 </div>
@@ -845,7 +845,7 @@ export default function CircleKeeper() {
                   onClick={() => initiateAction(c, a.id, logNote, logTopic)}>
                   <span style={{ fontSize: 22 }}>{a.icon}</span>
                   <span style={styles.actionLabel}>{a.label}</span>
-                  {!energyOk && <span style={{ fontSize: 9, color: "#8B7E74" }}>Energie?</span>}
+                  {!energyOk && <span style={{ fontSize: 9, color: "#78716C" }}>Energie?</span>}
                 </button>
               );
             })}
@@ -891,14 +891,14 @@ export default function CircleKeeper() {
             <div style={styles.timeline}>
               {c.history.slice(0, 25).map((h, i) => (
                 <div key={i} style={styles.timelineItem}>
-                  <div style={{ ...styles.timelineDot, background: h.incoming ? "#7B9EC4" : "#5B8A72" }} />
+                  <div style={{ ...styles.timelineDot, background: h.incoming ? "#0EA5E9" : "#059669" }} />
                   <div style={styles.timelineContent}>
                     <div style={{ display: "flex", flexDirection: "column", gap: 2, flex: 1 }}>
                       <span style={{ fontSize: 13 }}>
                         {h.incoming ? "📥 " : "📤 "}{h.icon} {h.label}
                       </span>
-                      {h.topic && <span style={{ fontSize: 11, color: "#5B8A72" }}>{h.topic}</span>}
-                      {h.note && <span style={{ fontSize: 11, color: "#8B7E74", fontStyle: "italic" }}>{h.note}</span>}
+                      {h.topic && <span style={{ fontSize: 11, color: "#059669" }}>{h.topic}</span>}
+                      {h.note && <span style={{ fontSize: 11, color: "#78716C", fontStyle: "italic" }}>{h.note}</span>}
                     </div>
                     <span style={styles.timelineDate}>{formatDate(h.date)}</span>
                   </div>
@@ -951,12 +951,12 @@ export default function CircleKeeper() {
                   {headline}
                 </h3>
                 {hasLink && (
-                  <p style={{ textAlign: "center", fontSize: 13, color: "#6B5E54", marginBottom: 12 }}>
+                  <p style={{ textAlign: "center", fontSize: 13, color: "#57534E", marginBottom: 12 }}>
                     {linkLabel} — App wird geöffnet
                   </p>
                 )}
                 {missingMsg && (
-                  <p style={{ textAlign: "center", fontSize: 12, color: "#B8860B", background: "rgba(184,134,11,.08)", padding: "6px 10px", borderRadius: 8, marginBottom: 12 }}>
+                  <p style={{ textAlign: "center", fontSize: 12, color: "#D97706", background: "rgba(217,119,6,.08)", padding: "6px 10px", borderRadius: 8, marginBottom: 12 }}>
                     ⚠ {missingMsg}
                   </p>
                 )}
@@ -988,7 +988,7 @@ export default function CircleKeeper() {
           <label style={styles.label}>Emoji</label>
           <div style={styles.emojiGrid}>
             {EMOJIS.map(e => (
-              <button key={e} style={{ ...styles.emojiBtn, ...(formEmoji === e ? { background: "#5B4A3F", transform: "scale(1.2)" } : {}) }}
+              <button key={e} style={{ ...styles.emojiBtn, ...(formEmoji === e ? { background: "#18181B", transform: "scale(1.2)" } : {}) }}
                 onClick={() => setFormEmoji(e)}>{e}</button>
             ))}
           </div>
@@ -1028,7 +1028,7 @@ export default function CircleKeeper() {
             {FREQUENCY_OPTIONS.map(f => (
               <button key={f.id} style={{
                 ...styles.freqOption,
-                ...(formFrequency === f.id ? { background: "#5B4A3F", color: "#fff", borderColor: "#5B4A3F" } : {}),
+                ...(formFrequency === f.id ? { background: "#18181B", color: "#fff", borderColor: "#18181B" } : {}),
               }} onClick={() => setFormFrequency(f.id)}>
                 {f.label}
               </button>
@@ -1067,7 +1067,7 @@ export default function CircleKeeper() {
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 10 }}>
               {SOCIAL_ACTIONS.map(s => (
                 <div key={s.id} style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                  <label style={{ fontSize: 11, color: "#8B7E74", fontFamily: "'Outfit', sans-serif" }}>
+                  <label style={{ fontSize: 11, color: "#78716C", fontFamily: "'Outfit', sans-serif" }}>
                     {s.icon} {s.label}
                   </label>
                   <input style={{ ...styles.input, fontSize: 12, padding: "8px 10px" }}
@@ -1086,7 +1086,7 @@ export default function CircleKeeper() {
             {TAGS.map(t => (
               <button key={t} style={{
                 ...styles.topicChip,
-                ...(formTags.includes(t) ? { background: "#5B4A3F", color: "#FAF5EF", borderColor: "#5B4A3F" } : {}),
+                ...(formTags.includes(t) ? { background: "#18181B", color: "#FAFAF9", borderColor: "#18181B" } : {}),
               }} onClick={() => setFormTags(formTags.includes(t) ? formTags.filter(x => x !== t) : [...formTags, t])}>
                 {t}
               </button>
@@ -1130,17 +1130,22 @@ export default function CircleKeeper() {
     <div style={styles.app}>
       <Fonts />
       <style>{`
-        @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
-        @keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.4; transform:scale(0.95); } }
-        @keyframes float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-8px); } }
-        @keyframes breathe { 0%,100% { transform:scale(1); } 50% { transform:scale(1.02); } }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes slideUp { from { opacity:0; transform:translateY(40px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
+        @keyframes popIn { 0% { opacity:0; transform:scale(0.8); } 60% { transform:scale(1.04); } 100% { opacity:1; transform:scale(1); } }
+        @keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.5; transform:scale(0.96); } }
+        @keyframes float { 0%,100% { transform:translateY(0) rotate(0deg); } 50% { transform:translateY(-6px) rotate(1deg); } }
+        @keyframes breathe { 0%,100% { transform:scale(1); } 50% { transform:scale(1.015); } }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        @keyframes fabGlow { 0%,100% { box-shadow: 0 8px 32px rgba(99,102,241,0.3), 0 0 0 0px rgba(99,102,241,0.15); } 50% { box-shadow: 0 8px 40px rgba(99,102,241,0.45), 0 0 0 8px rgba(99,102,241,0.08); } }
+        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
         ::-webkit-scrollbar { width: 0; height: 0; }
         button { cursor: pointer; }
-        button:active { transform: scale(0.96) !important; transition: transform 0.1s !important; }
-        button:hover { filter: brightness(0.97); }
-        input:focus, textarea:focus { box-shadow: 0 0 0 3px rgba(91,74,63,0.12), 0 2px 12px rgba(91,74,63,0.06) !important; }
+        button:active { transform: scale(0.96) !important; transition: transform 0.08s !important; }
+        button:hover { filter: brightness(0.98); }
+        input:focus, textarea:focus { box-shadow: 0 0 0 3px rgba(99,102,241,0.15), 0 2px 16px rgba(99,102,241,0.08) !important; }
       `}</style>
 
       {/* Hero */}
@@ -1166,21 +1171,21 @@ export default function CircleKeeper() {
             <span style={styles.statNum}>{contacts.length}</span>
             <span style={styles.statLabel}>Kontakte</span>
           </div>
-          <div style={{ width: 1, height: 28, background: "rgba(91,74,63,0.15)" }} />
+          <div style={{ width: 1, height: 28, background: "rgba(0,0,0,0.08)" }} />
           <div style={styles.stat}>
-            <span style={{ ...styles.statNum, color: needAttention.length > 0 ? "#D4644A" : "#5B8A72" }}>{needAttention.length}</span>
+            <span style={{ ...styles.statNum, color: needAttention.length > 0 ? "#D4644A" : "#059669" }}>{needAttention.length}</span>
             <span style={styles.statLabel}>brauchen dich</span>
           </div>
-          <div style={{ width: 1, height: 28, background: "rgba(91,74,63,0.15)" }} />
+          <div style={{ width: 1, height: 28, background: "rgba(0,0,0,0.08)" }} />
           <div style={styles.stat}>
-            <span style={{ ...styles.statNum, color: "#5B8A72" }}>
+            <span style={{ ...styles.statNum, color: "#059669" }}>
               {contacts.filter(c => getWarmth(c.lastContact, c.frequencyDays).level === "thriving").length}
             </span>
             <span style={styles.statLabel}>blühen</span>
           </div>
           {networkHealth && (
             <>
-              <div style={{ width: 1, height: 28, background: "rgba(91,74,63,0.15)" }} />
+              <div style={{ width: 1, height: 28, background: "rgba(0,0,0,0.08)" }} />
               <div style={styles.stat}>
                 <span style={{ ...styles.statNum, color: networkHealth.score >= 60 ? "#4CAF50" : networkHealth.score >= 40 ? "#FFC107" : "#F44336" }}>
                   {networkHealth.score}
@@ -1220,7 +1225,7 @@ export default function CircleKeeper() {
                 <span style={{ fontSize: 18 }}>{s.icon}</span>
                 <div style={{ flex: 1, textAlign: "left" }}>
                   <span style={{ fontSize: 13, fontWeight: 500, display: "block" }}>{s.text}</span>
-                  <span style={{ fontSize: 11, color: "#8B7E74" }}>{s.contact.emoji} {s.contact.name}</span>
+                  <span style={{ fontSize: 11, color: "#78716C" }}>{s.contact.emoji} {s.contact.name}</span>
                 </div>
                 <span style={{ fontSize: 14, opacity: 0.3 }}>→</span>
               </button>
@@ -1239,7 +1244,7 @@ export default function CircleKeeper() {
                 onClick={() => { setSelectedContact(c); setView("detail"); }}>
                 <div style={styles.attentionEmoji}>{c.emoji}</div>
                 <span style={styles.attentionName}>{c.name}</span>
-                <span style={{ fontSize: 11, color: "#9B7EC4", fontWeight: 600 }}>
+                <span style={{ fontSize: 11, color: "#8B5CF6", fontWeight: 600 }}>
                   {daysUntil(c.birthday) === 0 ? "Heute!" : `in ${daysUntil(c.birthday)}d`}
                 </span>
               </button>
@@ -1251,7 +1256,7 @@ export default function CircleKeeper() {
       {/* Attention needed */}
       {needAttention.length > 0 && (
         <div style={styles.section}>
-          <h3 style={{ ...styles.sectionTitle, color: "#D4644A" }}>⚡ Brauchen Aufmerksamkeit</h3>
+          <h3 style={{ ...styles.sectionTitle, color: "#E11D48" }}>⚡ Brauchen Aufmerksamkeit</h3>
           <div style={styles.attentionScroll}>
             {needAttention.slice(0, 8).map(c => {
               const w = getWarmth(c.lastContact, c.frequencyDays);
@@ -1291,7 +1296,7 @@ export default function CircleKeeper() {
             {c.emoji}
           </button>
         ))}
-        <div style={{ width: 1, height: 24, background: "rgba(91,74,63,0.15)", flexShrink: 0 }} />
+        <div style={{ width: 1, height: 24, background: "rgba(0,0,0,0.08)", flexShrink: 0 }} />
         {ROLES.filter(r => contacts.some(c => (c.role || "personal") === r.id)).map(r => (
           <button key={r.id} style={{
             ...styles.filterBtn,
@@ -1383,12 +1388,12 @@ export default function CircleKeeper() {
                 {headline}
               </h3>
               {hasLink && (
-                <p style={{ textAlign: "center", fontSize: 13, color: "#6B5E54", marginBottom: 12 }}>
+                <p style={{ textAlign: "center", fontSize: 13, color: "#57534E", marginBottom: 12 }}>
                   {linkLabel} — App wird geöffnet
                 </p>
               )}
               {missingMsg && (
-                <p style={{ textAlign: "center", fontSize: 12, color: "#B8860B", background: "rgba(184,134,11,.08)", padding: "6px 10px", borderRadius: 8, marginBottom: 12 }}>
+                <p style={{ textAlign: "center", fontSize: 12, color: "#D97706", background: "rgba(217,119,6,.08)", padding: "6px 10px", borderRadius: 8, marginBottom: 12 }}>
                   ⚠ {missingMsg}
                 </p>
               )}
@@ -1409,7 +1414,7 @@ export default function CircleKeeper() {
 // ─── FONTS COMPONENT ─────────────────────────────────────────────────────────
 
 function Fonts() {
-  return <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />;
+  return <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />;
 }
 
 // ─── STYLES ──────────────────────────────────────────────────────────────────
@@ -1417,390 +1422,415 @@ function Fonts() {
 const styles = {
   app: {
     fontFamily: "'Outfit', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
-    background: "linear-gradient(165deg, #FBF7F2 0%, #F5EDE5 40%, #EDE3D8 70%, #E8DACE 100%)",
+    background: `
+      radial-gradient(ellipse at 20% 0%, rgba(99,102,241,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 100%, rgba(16,185,129,0.05) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(245,158,11,0.03) 0%, transparent 60%),
+      linear-gradient(165deg, #FAFAF8 0%, #F5F3EF 35%, #EFECE7 65%, #E9E5E0 100%)
+    `,
     minHeight: "100vh",
     maxWidth: 480,
     margin: "0 auto",
     position: "relative",
     paddingBottom: 110,
-    color: "#2C2420",
+    color: "#1C1917",
     overflow: "hidden",
   },
   loadWrap: {
     display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-    height: "100vh", background: "linear-gradient(165deg, #FBF7F2 0%, #EDE3D8 100%)",
+    height: "100vh",
+    background: "linear-gradient(165deg, #FAFAF8 0%, #EFECE7 100%)",
   },
-  loadPulse: { fontSize: 52, animation: "pulse 1.8s ease-in-out infinite", color: "#5B4A3F", marginBottom: 20 },
+  loadPulse: { fontSize: 52, animation: "pulse 1.8s ease-in-out infinite", color: "#6366F1", marginBottom: 20 },
 
   // Hero
   hero: { position: "relative", padding: "56px 28px 32px", overflow: "hidden" },
   heroDecor: { position: "absolute", inset: 0, pointerEvents: "none" },
-  heroShape: { position: "absolute", color: "#5B4A3F", animation: "float 4s ease-in-out infinite" },
+  heroShape: { position: "absolute", color: "#6366F1", animation: "float 5s ease-in-out infinite" },
   heroTitle: {
-    fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 46, fontWeight: 400,
-    lineHeight: 1, color: "#2C2420", margin: 0, letterSpacing: -1.5,
+    fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 48, fontWeight: 400,
+    lineHeight: 0.95, color: "#1C1917", margin: 0, letterSpacing: -2,
+    background: "linear-gradient(135deg, #1C1917 0%, #6366F1 100%)",
+    WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+    backgroundClip: "text",
   },
-  heroSub: { fontSize: 15, color: "#9B8E82", marginTop: 10, fontWeight: 300, letterSpacing: 0.3 },
+  heroSub: { fontSize: 15, color: "#78716C", marginTop: 12, fontWeight: 400, letterSpacing: 0.2 },
   insightsBtn: {
-    width: 48, height: 48, borderRadius: 24, border: "none",
-    background: "rgba(255,255,255,0.65)", display: "flex", alignItems: "center", justifyContent: "center",
+    width: 48, height: 48, borderRadius: 16, border: "none",
+    background: "rgba(255,255,255,0.75)", display: "flex", alignItems: "center", justifyContent: "center",
     fontSize: 20, cursor: "pointer", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
-    boxShadow: "0 2px 16px rgba(91,74,63,0.08), inset 0 1px 0 rgba(255,255,255,0.5)",
-    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    boxShadow: "0 2px 16px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.03)",
+    transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
   },
   statsRow: {
     display: "flex", alignItems: "center", justifyContent: "center", gap: 18,
-    marginTop: 28, padding: "20px 20px",
-    background: "rgba(255,255,255,0.55)",
+    marginTop: 28, padding: "22px 22px",
+    background: "rgba(255,255,255,0.72)",
     borderRadius: 24, backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", flexWrap: "wrap",
-    boxShadow: "0 4px 24px rgba(91,74,63,0.06), inset 0 1px 0 rgba(255,255,255,0.6)",
-    border: "1px solid rgba(255,255,255,0.5)",
+    boxShadow: "0 4px 32px rgba(0,0,0,0.04), 0 0 0 1px rgba(255,255,255,0.8)",
+    border: "1px solid rgba(0,0,0,0.04)",
   },
-  stat: { display: "flex", flexDirection: "column", alignItems: "center", gap: 3 },
-  statNum: { fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 30, color: "#2C2420", lineHeight: 1 },
-  statLabel: { fontSize: 10, color: "#9B8E82", fontWeight: 500, letterSpacing: 0.8, textTransform: "uppercase" },
+  stat: { display: "flex", flexDirection: "column", alignItems: "center", gap: 4 },
+  statNum: { fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 32, color: "#1C1917", lineHeight: 1 },
+  statLabel: { fontSize: 10, color: "#78716C", fontWeight: 600, letterSpacing: 1, textTransform: "uppercase" },
 
   // Section
-  section: { padding: "14px 28px 10px" },
+  section: { padding: "16px 28px 10px" },
   sectionTitle: {
     fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 19, fontWeight: 400,
-    margin: "0 0 14px 0", color: "#2C2420",
+    margin: "0 0 14px 0", color: "#1C1917",
   },
 
   // Energy
   energyBtn: {
-    flex: "0 0 auto", display: "flex", flexDirection: "column", alignItems: "center", gap: 5,
-    padding: "12px 16px", borderRadius: 22, border: "none",
-    background: "rgba(255,255,255,0.55)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
-    cursor: "pointer", transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)", fontFamily: "'Outfit', sans-serif",
-    boxShadow: "0 2px 12px rgba(91,74,63,0.05), inset 0 1px 0 rgba(255,255,255,0.4)",
+    flex: "0 0 auto", display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
+    padding: "14px 18px", borderRadius: 20, border: "1px solid rgba(0,0,0,0.04)",
+    background: "rgba(255,255,255,0.65)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
+    cursor: "pointer", transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)", fontFamily: "'Outfit', sans-serif",
+    boxShadow: "0 2px 12px rgba(0,0,0,0.03)",
   },
 
   // Suggestions
   suggestionList: { display: "flex", flexDirection: "column", gap: 10 },
   suggestionCard: {
-    display: "flex", alignItems: "center", gap: 14, padding: "14px 18px",
-    background: "rgba(255,255,255,0.6)", border: "none",
-    borderRadius: 22, cursor: "pointer", transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    display: "flex", alignItems: "center", gap: 14, padding: "16px 20px",
+    background: "rgba(255,255,255,0.72)", border: "1px solid rgba(0,0,0,0.04)",
+    borderRadius: 20, cursor: "pointer", transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
     fontFamily: "'Outfit', sans-serif", width: "100%", textAlign: "left",
     backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
-    boxShadow: "0 2px 16px rgba(91,74,63,0.05), inset 0 1px 0 rgba(255,255,255,0.5)",
+    boxShadow: "0 2px 16px rgba(0,0,0,0.03)",
   },
 
   // Attention cards
   attentionScroll: { display: "flex", gap: 12, overflowX: "auto", paddingBottom: 10, scrollSnapType: "x mandatory" },
   attentionCard: {
-    flex: "0 0 auto", width: 116, padding: "18px 12px", background: "rgba(255,255,255,0.65)",
-    border: "none", borderRadius: 24,
-    display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
-    cursor: "pointer", scrollSnapAlign: "start", transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-    boxShadow: "0 4px 20px rgba(91,74,63,0.06), inset 0 1px 0 rgba(255,255,255,0.5)",
+    flex: "0 0 auto", width: 120, padding: "20px 14px", background: "rgba(255,255,255,0.75)",
+    border: "1px solid rgba(0,0,0,0.04)", borderRadius: 22,
+    display: "flex", flexDirection: "column", alignItems: "center", gap: 7,
+    cursor: "pointer", scrollSnapAlign: "start", transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+    boxShadow: "0 4px 24px rgba(0,0,0,0.04)",
     backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
     fontFamily: "'Outfit', sans-serif",
   },
-  attentionEmoji: { fontSize: 30 },
-  attentionName: { fontSize: 12, fontWeight: 600, color: "#2C2420", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%" },
-  attentionStatus: { fontSize: 11, fontWeight: 600 },
-  attentionTime: { fontSize: 10, color: "#9B8E82" },
+  attentionEmoji: { fontSize: 32 },
+  attentionName: { fontSize: 12, fontWeight: 600, color: "#1C1917", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%" },
+  attentionStatus: { fontSize: 11, fontWeight: 700 },
+  attentionTime: { fontSize: 10, color: "#78716C" },
 
   // Filters
   filterRow: { display: "flex", gap: 8, padding: "10px 28px 6px", overflowX: "auto", alignItems: "center" },
   filterBtn: {
-    padding: "8px 16px", borderRadius: 50, border: "none",
-    background: "rgba(255,255,255,0.5)", fontSize: 12, fontWeight: 500, color: "#5B4A3F",
+    padding: "9px 18px", borderRadius: 50, border: "1px solid rgba(0,0,0,0.06)",
+    background: "rgba(255,255,255,0.6)", fontSize: 12, fontWeight: 500, color: "#44403C",
     cursor: "pointer", whiteSpace: "nowrap", fontFamily: "'Outfit', sans-serif",
-    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)", flexShrink: 0,
+    transition: "all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)", flexShrink: 0,
     backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
-    boxShadow: "0 1px 8px rgba(91,74,63,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
+    boxShadow: "0 1px 6px rgba(0,0,0,0.02)",
   },
-  filterActive: { background: "#3A2F28", color: "#FAF5EF", boxShadow: "0 4px 16px rgba(58,47,40,0.2)" },
+  filterActive: {
+    background: "linear-gradient(135deg, #18181B 0%, #27272A 100%)", color: "#FAFAF9",
+    boxShadow: "0 4px 16px rgba(24,24,27,0.2)", border: "1px solid transparent",
+  },
 
   // Contact List
   contactList: { padding: "8px 20px" },
   contactCard: {
     display: "flex", alignItems: "center", justifyContent: "space-between",
-    width: "100%", padding: "16px 18px", background: "rgba(255,255,255,0.6)",
-    border: "none", borderRadius: 22,
-    marginBottom: 10, cursor: "pointer", transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    width: "100%", padding: "18px 20px", background: "rgba(255,255,255,0.72)",
+    border: "1px solid rgba(0,0,0,0.04)", borderRadius: 22,
+    marginBottom: 10, cursor: "pointer", transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
     animation: "fadeUp 0.5s ease-out both",
-    boxShadow: "0 2px 16px rgba(91,74,63,0.05), inset 0 1px 0 rgba(255,255,255,0.5)",
+    boxShadow: "0 2px 16px rgba(0,0,0,0.03)",
     fontFamily: "'Outfit', sans-serif", textAlign: "left",
     backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
   },
   cardLeft: { display: "flex", alignItems: "center", gap: 14, minWidth: 0, flex: 1 },
   cardEmoji: {
-    width: 48, height: 48, borderRadius: 24, display: "flex", alignItems: "center", justifyContent: "center",
-    fontSize: 22, flexShrink: 0, boxShadow: "0 2px 8px rgba(91,74,63,0.06)",
+    width: 50, height: 50, borderRadius: 18, display: "flex", alignItems: "center", justifyContent: "center",
+    fontSize: 24, flexShrink: 0, boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
+    border: "1px solid rgba(0,0,0,0.04)",
   },
-  cardInfo: { display: "flex", flexDirection: "column", gap: 3, minWidth: 0 },
-  cardName: { fontSize: 15, fontWeight: 600, color: "#2C2420", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" },
-  cardMeta: { fontSize: 11, color: "#9B8E82", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" },
-  cardRight: { display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4, flexShrink: 0, marginLeft: 10 },
-  miniBar: { width: 52, height: 5, borderRadius: 20, background: "rgba(212,196,176,0.3)", overflow: "hidden" },
+  cardInfo: { display: "flex", flexDirection: "column", gap: 4, minWidth: 0 },
+  cardName: { fontSize: 15, fontWeight: 600, color: "#1C1917", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" },
+  cardMeta: { fontSize: 11, color: "#78716C", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" },
+  cardRight: { display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 5, flexShrink: 0, marginLeft: 10 },
+  miniBar: { width: 56, height: 6, borderRadius: 20, background: "rgba(0,0,0,0.06)", overflow: "hidden" },
   miniBarFill: { height: "100%", borderRadius: 20, transition: "width 0.8s cubic-bezier(0.4, 0, 0.2, 1)" },
-  cardStatus: { fontSize: 10, fontWeight: 600, letterSpacing: 0.3 },
+  cardStatus: { fontSize: 10, fontWeight: 700, letterSpacing: 0.3 },
 
   // FAB
   fab: {
     position: "fixed", bottom: 32, right: "calc(50% - 212px)",
-    width: 60, height: 60, borderRadius: 30,
-    background: "linear-gradient(145deg, #5B4A3F 0%, #3A2F28 100%)",
-    color: "#FAF5EF", border: "none", cursor: "pointer",
+    width: 64, height: 64, borderRadius: 22,
+    background: "linear-gradient(135deg, #6366F1 0%, #4F46E5 50%, #4338CA 100%)",
+    color: "#fff", border: "none", cursor: "pointer",
     display: "flex", alignItems: "center", justifyContent: "center",
-    boxShadow: "0 8px 32px rgba(58,47,40,0.3), 0 0 0 5px rgba(250,245,239,0.3)",
-    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)", zIndex: 100,
+    boxShadow: "0 8px 32px rgba(99,102,241,0.35), 0 0 0 4px rgba(99,102,241,0.12)",
+    transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)", zIndex: 100,
+    animation: "fabGlow 3s ease-in-out infinite",
   },
 
   // Header
   header: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 24px 10px" },
-  headerTitle: { fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 21, margin: 0, color: "#2C2420" },
+  headerTitle: { fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 21, margin: 0, color: "#1C1917" },
   backBtn: {
-    background: "rgba(255,255,255,0.5)", border: "none", fontSize: 14, color: "#5B4A3F",
-    cursor: "pointer", fontFamily: "'Outfit', sans-serif", fontWeight: 500, padding: "10px 16px",
+    background: "rgba(255,255,255,0.7)", border: "1px solid rgba(0,0,0,0.06)", fontSize: 14, color: "#44403C",
+    cursor: "pointer", fontFamily: "'Outfit', sans-serif", fontWeight: 500, padding: "10px 18px",
     borderRadius: 50, backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
-    boxShadow: "0 1px 8px rgba(91,74,63,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
-    transition: "all 0.2s",
+    boxShadow: "0 1px 8px rgba(0,0,0,0.03)",
+    transition: "all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)",
   },
   editBtn: {
-    background: "rgba(255,255,255,0.5)", border: "none", fontSize: 16, color: "#5B4A3F",
+    background: "rgba(255,255,255,0.7)", border: "1px solid rgba(0,0,0,0.06)", fontSize: 16, color: "#44403C",
     cursor: "pointer", padding: "10px 14px", borderRadius: 50,
     backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
-    boxShadow: "0 1px 8px rgba(91,74,63,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
-    transition: "all 0.2s",
+    boxShadow: "0 1px 8px rgba(0,0,0,0.03)",
+    transition: "all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)",
   },
 
   // Detail
-  detailHero: { textAlign: "center", padding: "12px 28px 20px" },
+  detailHero: { textAlign: "center", padding: "12px 28px 24px" },
   detailEmoji: {
-    fontSize: 64, marginBottom: 12,
-    width: 100, height: 100, lineHeight: "100px",
-    borderRadius: 50, background: "rgba(255,255,255,0.6)",
+    fontSize: 64, marginBottom: 14,
+    width: 108, height: 108, lineHeight: "108px",
+    borderRadius: 32, background: "rgba(255,255,255,0.75)",
     display: "inline-block",
-    boxShadow: "0 8px 32px rgba(91,74,63,0.08), inset 0 2px 0 rgba(255,255,255,0.5)",
+    boxShadow: "0 12px 40px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.03)",
     backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
+    border: "1px solid rgba(255,255,255,0.8)",
+    animation: "popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both",
   },
-  detailName: { fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 34, fontWeight: 400, margin: "0 0 10px", color: "#2C2420" },
+  detailName: { fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 36, fontWeight: 400, margin: "0 0 12px", color: "#1C1917", letterSpacing: -0.5 },
   catBadge: {
-    display: "inline-block", padding: "6px 16px", borderRadius: 50, fontSize: 12, fontWeight: 500,
+    display: "inline-block", padding: "7px 18px", borderRadius: 50, fontSize: 12, fontWeight: 600,
     backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
+    border: "1px solid rgba(0,0,0,0.06)",
   },
   warmthBarOuter: {
-    height: 8, borderRadius: 20, background: "rgba(212,196,176,0.25)", margin: "18px auto 10px",
+    height: 8, borderRadius: 20, background: "rgba(0,0,0,0.06)", margin: "20px auto 10px",
     maxWidth: 220, overflow: "hidden",
   },
-  warmthBarInner: { height: "100%", borderRadius: 20, transition: "width 1s cubic-bezier(0.4, 0, 0.2, 1)" },
-  warmthLabel: { fontSize: 12, color: "#9B8E82", letterSpacing: 0.2 },
+  warmthBarInner: { height: "100%", borderRadius: 20, transition: "width 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)" },
+  warmthLabel: { fontSize: 12, color: "#78716C", letterSpacing: 0.2 },
   noteBox: {
-    margin: "0 28px 14px", padding: "16px 20px",
-    background: "rgba(255,255,255,0.55)", borderRadius: 22,
-    fontSize: 13, color: "#5B4A3F", lineHeight: 1.6,
+    margin: "0 28px 14px", padding: "18px 22px",
+    background: "rgba(255,255,255,0.68)", borderRadius: 20,
+    fontSize: 13, color: "#44403C", lineHeight: 1.65,
     backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
-    boxShadow: "0 2px 12px rgba(91,74,63,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
+    boxShadow: "0 2px 16px rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.04)",
   },
   bdayBadge: {
-    display: "inline-block", marginTop: 10, padding: "6px 18px", borderRadius: 50,
-    fontSize: 12, fontWeight: 500, background: "rgba(155,126,196,0.12)", color: "#9B7EC4",
+    display: "inline-block", marginTop: 12, padding: "7px 20px", borderRadius: 50,
+    fontSize: 12, fontWeight: 600, background: "rgba(139,92,246,0.1)", color: "#7C3AED",
     backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
+    border: "1px solid rgba(139,92,246,0.15)",
   },
 
   // Balance card
   balanceCard: {
-    margin: "0 28px 14px", padding: "18px 20px", background: "rgba(255,255,255,0.55)",
-    borderRadius: 24, border: "none",
+    margin: "0 28px 14px", padding: "20px 22px", background: "rgba(255,255,255,0.68)",
+    borderRadius: 22, border: "1px solid rgba(0,0,0,0.04)",
     backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
-    boxShadow: "0 2px 16px rgba(91,74,63,0.05), inset 0 1px 0 rgba(255,255,255,0.4)",
+    boxShadow: "0 2px 16px rgba(0,0,0,0.03)",
   },
 
   // Contact info
   contactInfo: {
-    fontSize: 12, color: "#5B4A3F", padding: "8px 14px", borderRadius: 50,
-    background: "rgba(255,255,255,0.55)", border: "none",
+    fontSize: 12, color: "#44403C", padding: "9px 16px", borderRadius: 50,
+    background: "rgba(255,255,255,0.68)", border: "1px solid rgba(0,0,0,0.05)",
     backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
-    boxShadow: "0 1px 6px rgba(91,74,63,0.04)",
+    boxShadow: "0 1px 6px rgba(0,0,0,0.02)",
+    fontWeight: 500,
   },
 
   // Tags
   tagDisplay: {
-    fontSize: 11, padding: "5px 14px", borderRadius: 50,
-    background: "rgba(91,74,63,0.07)", color: "#5B4A3F", fontWeight: 500,
+    fontSize: 11, padding: "6px 16px", borderRadius: 50,
+    background: "rgba(99,102,241,0.08)", color: "#4F46E5", fontWeight: 600,
+    border: "1px solid rgba(99,102,241,0.1)",
   },
   topicChip: {
-    padding: "7px 14px", borderRadius: 50, border: "none",
-    background: "rgba(255,255,255,0.5)", fontSize: 11, color: "#5B4A3F", cursor: "pointer",
-    fontFamily: "'Outfit', sans-serif", transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)", whiteSpace: "nowrap",
-    boxShadow: "0 1px 6px rgba(91,74,63,0.04), inset 0 1px 0 rgba(255,255,255,0.3)",
+    padding: "8px 16px", borderRadius: 50, border: "1px solid rgba(0,0,0,0.06)",
+    background: "rgba(255,255,255,0.6)", fontSize: 11, color: "#44403C", cursor: "pointer",
+    fontFamily: "'Outfit', sans-serif", transition: "all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)", whiteSpace: "nowrap",
+    boxShadow: "0 1px 6px rgba(0,0,0,0.02)",
     backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
+    fontWeight: 500,
   },
 
   // Incoming
   incomingBtn: {
-    width: "100%", padding: "16px 20px", borderRadius: 24,
-    border: "none", background: "rgba(123,158,196,0.1)",
-    color: "#5B7A94", fontSize: 14, fontWeight: 600, cursor: "pointer",
-    fontFamily: "'Outfit', sans-serif", transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    width: "100%", padding: "18px 22px", borderRadius: 22,
+    border: "1px solid rgba(14,165,233,0.15)", background: "rgba(14,165,233,0.06)",
+    color: "#0284C7", fontSize: 14, fontWeight: 600, cursor: "pointer",
+    fontFamily: "'Outfit', sans-serif", transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
     textAlign: "center", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
-    boxShadow: "0 2px 12px rgba(123,158,196,0.08), inset 0 1px 0 rgba(255,255,255,0.3)",
+    boxShadow: "0 2px 12px rgba(14,165,233,0.06)",
   },
 
   // Actions
   actionGrid: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 10 },
   actionBtn: {
-    display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
-    padding: "16px 8px", background: "rgba(255,255,255,0.6)", border: "none",
-    borderRadius: 22, cursor: "pointer", transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    display: "flex", flexDirection: "column", alignItems: "center", gap: 7,
+    padding: "18px 8px", background: "rgba(255,255,255,0.72)", border: "1px solid rgba(0,0,0,0.04)",
+    borderRadius: 20, cursor: "pointer", transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
     fontFamily: "'Outfit', sans-serif",
     backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
-    boxShadow: "0 2px 12px rgba(91,74,63,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
+    boxShadow: "0 2px 12px rgba(0,0,0,0.03)",
   },
-  actionLabel: { fontSize: 10, fontWeight: 600, color: "#3A2F28", letterSpacing: 0.2 },
+  actionLabel: { fontSize: 10, fontWeight: 700, color: "#1C1917", letterSpacing: 0.2 },
 
   // Timeline
   timeline: { paddingLeft: 8 },
   timelineItem: {
-    display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 14, position: "relative",
-    padding: "10px 14px", background: "rgba(255,255,255,0.35)", borderRadius: 18,
+    display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 12, position: "relative",
+    padding: "12px 16px", background: "rgba(255,255,255,0.5)", borderRadius: 18,
     backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
+    border: "1px solid rgba(0,0,0,0.03)",
+    transition: "all 0.2s ease",
   },
   timelineDot: {
-    width: 10, height: 10, borderRadius: 20, background: "#D4C4B0", marginTop: 5, flexShrink: 0,
-    boxShadow: "0 1px 4px rgba(91,74,63,0.1)",
+    width: 10, height: 10, borderRadius: 20, background: "#D6D3D1", marginTop: 5, flexShrink: 0,
+    boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
   },
   timelineContent: { display: "flex", justifyContent: "space-between", flex: 1, fontSize: 13, alignItems: "flex-start" },
-  timelineDate: { fontSize: 11, color: "#9B8E82", flexShrink: 0, marginLeft: 8 },
+  timelineDate: { fontSize: 11, color: "#78716C", flexShrink: 0, marginLeft: 8 },
 
   // Form
   formWrap: { padding: "8px 28px", paddingBottom: 36 },
-  formInner: { display: "flex", flexDirection: "column", gap: 18 },
+  formInner: { display: "flex", flexDirection: "column", gap: 20 },
   formGroup: { display: "flex", flexDirection: "column", gap: 8 },
-  label: { fontSize: 13, fontWeight: 600, color: "#5B4A3F", letterSpacing: 0.3 },
+  label: { fontSize: 13, fontWeight: 700, color: "#44403C", letterSpacing: 0.3 },
   input: {
-    padding: "14px 20px", borderRadius: 50, border: "none",
+    padding: "15px 22px", borderRadius: 16, border: "1px solid rgba(0,0,0,0.06)",
     fontSize: 15, fontFamily: "'Outfit', sans-serif",
-    background: "rgba(255,255,255,0.6)", color: "#2C2420", outline: "none",
-    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    background: "rgba(255,255,255,0.75)", color: "#1C1917", outline: "none",
+    transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
     backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
-    boxShadow: "0 2px 12px rgba(91,74,63,0.04), inset 0 1px 0 rgba(255,255,255,0.5)",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.02)",
   },
   textarea: {
-    padding: "16px 20px", borderRadius: 24, border: "none",
+    padding: "16px 22px", borderRadius: 20, border: "1px solid rgba(0,0,0,0.06)",
     fontSize: 14, fontFamily: "'Outfit', sans-serif",
-    background: "rgba(255,255,255,0.6)", color: "#2C2420", outline: "none", resize: "none",
-    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    background: "rgba(255,255,255,0.75)", color: "#1C1917", outline: "none", resize: "none",
+    transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
     backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
-    boxShadow: "0 2px 12px rgba(91,74,63,0.04), inset 0 1px 0 rgba(255,255,255,0.5)",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.02)",
   },
   emojiGrid: { display: "flex", flexWrap: "wrap", gap: 8 },
   emojiBtn: {
-    width: 40, height: 40, borderRadius: 20, border: "none",
-    background: "rgba(255,255,255,0.5)",
-    fontSize: 18, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-    transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
-    boxShadow: "0 1px 6px rgba(91,74,63,0.04), inset 0 1px 0 rgba(255,255,255,0.3)",
+    width: 44, height: 44, borderRadius: 14, border: "1px solid rgba(0,0,0,0.04)",
+    background: "rgba(255,255,255,0.6)",
+    fontSize: 19, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+    transition: "all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)",
+    boxShadow: "0 1px 6px rgba(0,0,0,0.02)",
     backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
   },
   catSelect: { display: "flex", gap: 8, flexWrap: "wrap" },
   catOption: {
-    padding: "9px 16px", borderRadius: 50, border: "none",
-    background: "rgba(255,255,255,0.5)",
-    fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: "'Outfit', sans-serif",
-    transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)", color: "#5B4A3F",
-    boxShadow: "0 1px 8px rgba(91,74,63,0.04), inset 0 1px 0 rgba(255,255,255,0.3)",
+    padding: "10px 18px", borderRadius: 50, border: "1px solid rgba(0,0,0,0.06)",
+    background: "rgba(255,255,255,0.6)",
+    fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "'Outfit', sans-serif",
+    transition: "all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)", color: "#44403C",
+    boxShadow: "0 1px 6px rgba(0,0,0,0.02)",
     backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
   },
   freqSelect: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 },
   freqOption: {
-    padding: "12px 10px", borderRadius: 50, border: "none",
-    background: "rgba(255,255,255,0.5)",
-    fontSize: 11, fontWeight: 500, cursor: "pointer", fontFamily: "'Outfit', sans-serif",
-    transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)", color: "#5B4A3F", textAlign: "center",
-    boxShadow: "0 1px 8px rgba(91,74,63,0.04), inset 0 1px 0 rgba(255,255,255,0.3)",
+    padding: "13px 10px", borderRadius: 16, border: "1px solid rgba(0,0,0,0.06)",
+    background: "rgba(255,255,255,0.6)",
+    fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "'Outfit', sans-serif",
+    transition: "all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)", color: "#44403C", textAlign: "center",
+    boxShadow: "0 1px 6px rgba(0,0,0,0.02)",
     backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
   },
   submitBtn: {
-    padding: "16px 24px", borderRadius: 50, border: "none",
-    background: "linear-gradient(145deg, #5B4A3F 0%, #3A2F28 100%)",
-    color: "#FAF5EF", fontSize: 16, fontWeight: 600, cursor: "pointer",
+    padding: "18px 28px", borderRadius: 18, border: "none",
+    background: "linear-gradient(135deg, #6366F1 0%, #4F46E5 50%, #4338CA 100%)",
+    color: "#fff", fontSize: 16, fontWeight: 600, cursor: "pointer",
     fontFamily: "'Outfit', sans-serif",
-    boxShadow: "0 8px 32px rgba(58,47,40,0.25)",
-    marginTop: 8, transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    boxShadow: "0 8px 32px rgba(99,102,241,0.3), 0 0 0 1px rgba(99,102,241,0.1)",
+    marginTop: 8, transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
     letterSpacing: 0.3,
   },
   cancelBtn: {
-    padding: "14px 24px", borderRadius: 50, border: "none",
-    background: "rgba(255,255,255,0.5)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
-    color: "#5B4A3F", fontSize: 14, fontWeight: 500, cursor: "pointer", fontFamily: "'Outfit', sans-serif",
-    boxShadow: "0 1px 8px rgba(91,74,63,0.04)",
-    transition: "all 0.2s",
+    padding: "15px 24px", borderRadius: 16, border: "1px solid rgba(0,0,0,0.08)",
+    background: "rgba(255,255,255,0.6)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
+    color: "#44403C", fontSize: 14, fontWeight: 500, cursor: "pointer", fontFamily: "'Outfit', sans-serif",
+    boxShadow: "0 1px 6px rgba(0,0,0,0.02)",
+    transition: "all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)",
   },
   deleteBtn: {
-    margin: "28px auto", display: "block", padding: "12px 24px", borderRadius: 50,
-    border: "none", background: "rgba(212,100,74,0.08)",
-    color: "#D4644A", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "'Outfit', sans-serif",
-    boxShadow: "0 2px 12px rgba(212,100,74,0.06)",
-    transition: "all 0.2s",
+    margin: "28px auto", display: "block", padding: "14px 28px", borderRadius: 16,
+    border: "1px solid rgba(239,68,68,0.15)", background: "rgba(239,68,68,0.06)",
+    color: "#DC2626", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "'Outfit', sans-serif",
+    boxShadow: "0 2px 12px rgba(239,68,68,0.06)",
+    transition: "all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)",
   },
 
   // Insights
   insightCard: {
-    margin: "10px 28px", padding: "22px 22px", background: "rgba(255,255,255,0.55)",
-    borderRadius: 28, border: "none",
+    margin: "10px 28px", padding: "24px 24px", background: "rgba(255,255,255,0.68)",
+    borderRadius: 24, border: "1px solid rgba(0,0,0,0.04)",
     backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
-    boxShadow: "0 4px 24px rgba(91,74,63,0.05), inset 0 1px 0 rgba(255,255,255,0.5)",
+    boxShadow: "0 4px 24px rgba(0,0,0,0.03)",
   },
   insightTitle: {
     fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 17, fontWeight: 400,
-    margin: "0 0 14px 0", color: "#2C2420",
+    margin: "0 0 16px 0", color: "#1C1917",
   },
   healthBar: { display: "flex", borderRadius: 20, overflow: "hidden", height: 10 },
   balanceRow: {
-    display: "flex", alignItems: "center", gap: 12, padding: "10px 0",
+    display: "flex", alignItems: "center", gap: 12, padding: "12px 0",
     width: "100%", background: "transparent", border: "none",
-    borderBottom: "1px solid rgba(212,196,176,0.15)",
+    borderBottom: "1px solid rgba(0,0,0,0.05)",
     cursor: "pointer", fontFamily: "'Outfit', sans-serif",
     transition: "all 0.2s",
   },
 
   // Empty
-  emptyState: { textAlign: "center", padding: "56px 28px" },
-  emptyTitle: { fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 22, color: "#2C2420", margin: "16px 0 6px" },
-  emptyHint: { fontSize: 14, color: "#9B8E82" },
+  emptyState: { textAlign: "center", padding: "60px 28px" },
+  emptyTitle: { fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 24, color: "#1C1917", margin: "16px 0 8px" },
+  emptyHint: { fontSize: 14, color: "#78716C" },
 
   // Toast
   toast: {
     position: "fixed", bottom: 104, left: "50%", transform: "translateX(-50%)",
     padding: "14px 28px", borderRadius: 50,
-    background: "rgba(44,36,32,0.88)", color: "#FAF5EF",
+    background: "rgba(24,24,27,0.92)", color: "#FAFAF9",
     fontSize: 14, fontWeight: 500, zIndex: 200,
-    animation: "fadeUp 0.4s cubic-bezier(0.4, 0, 0.2, 1)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
-    boxShadow: "0 8px 32px rgba(0,0,0,0.2)", fontFamily: "'Outfit', sans-serif",
-    whiteSpace: "nowrap", letterSpacing: 0.2,
+    animation: "slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
+    boxShadow: "0 8px 32px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.05)", fontFamily: "'Outfit', sans-serif",
+    whiteSpace: "nowrap", letterSpacing: 0.3,
   },
 
   // Confirmation Dialog
   confirmOverlay: {
-    position: "fixed", inset: 0, background: "rgba(44,36,32,0.45)",
-    backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
+    position: "fixed", inset: 0, background: "rgba(0,0,0,0.3)",
+    backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
     display: "flex", alignItems: "center", justifyContent: "center",
     zIndex: 300, animation: "fadeUp 0.2s ease-out",
   },
   confirmDialog: {
-    background: "rgba(251,247,242,0.95)", borderRadius: 28,
-    padding: "28px 24px 22px", maxWidth: 340, width: "90%",
-    boxShadow: "0 20px 60px rgba(44,36,32,0.25), inset 0 1px 0 rgba(255,255,255,0.7)",
+    background: "rgba(250,250,248,0.96)", borderRadius: 28,
+    padding: "32px 28px 24px", maxWidth: 360, width: "90%",
+    boxShadow: "0 24px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.04)",
     backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
     fontFamily: "'Outfit', sans-serif",
+    animation: "popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both",
   },
   confirmOk: {
-    flex: 1, padding: "14px 0", borderRadius: 16, border: "none",
-    background: "#3A2F28", color: "#FAF5EF", fontSize: 14, fontWeight: 600,
+    flex: 1, padding: "15px 0", borderRadius: 16, border: "none",
+    background: "linear-gradient(135deg, #6366F1, #4F46E5)", color: "#fff", fontSize: 14, fontWeight: 600,
     cursor: "pointer", fontFamily: "'Outfit', sans-serif",
-    transition: "all 0.2s", letterSpacing: 0.3,
+    transition: "all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)", letterSpacing: 0.3,
+    boxShadow: "0 4px 16px rgba(99,102,241,0.25)",
   },
   confirmCancel: {
-    flex: 1, padding: "14px 0", borderRadius: 16,
-    border: "1.5px solid rgba(91,74,63,0.15)", background: "transparent",
-    color: "#5B4A3F", fontSize: 14, fontWeight: 500,
+    flex: 1, padding: "15px 0", borderRadius: 16,
+    border: "1.5px solid rgba(0,0,0,0.1)", background: "transparent",
+    color: "#44403C", fontSize: 14, fontWeight: 500,
     cursor: "pointer", fontFamily: "'Outfit', sans-serif",
-    transition: "all 0.2s",
+    transition: "all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)",
   },
 };
