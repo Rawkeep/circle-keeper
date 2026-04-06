@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useLayoutEffect } from "react";
 
 // ─── CONSTANTS ───────────────────────────────────────────────────────────────
 
@@ -212,6 +212,20 @@ export default function CircleKeeper() {
   const [logTopic, setLogTopic] = useState("");
   const [showLogOptions, setShowLogOptions] = useState(false);
   const [pendingAction, setPendingAction] = useState(null); // {contact, actionId, note, topic}
+  const [darkMode, setDarkMode] = useState(() => {
+    if (typeof window !== "undefined" && window.matchMedia) {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches;
+    }
+    return false;
+  });
+
+  // Listen for OS theme changes
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const handler = (e) => setDarkMode(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   // Form state
   const [formName, setFormName] = useState("");
@@ -238,6 +252,7 @@ export default function CircleKeeper() {
         if (settings?.value) {
           const s = JSON.parse(settings.value);
           if (s.energyLevel) setEnergyLevel(s.energyLevel);
+          if (s.darkMode !== undefined) setDarkMode(s.darkMode);
         }
       } catch { }
       setLoaded(true);
@@ -259,8 +274,16 @@ export default function CircleKeeper() {
 
   const setEnergy = (level) => {
     setEnergyLevel(level);
-    persistSettings({ energyLevel: level });
+    persistSettings({ energyLevel: level, darkMode });
   };
+
+  const toggleDarkMode = () => {
+    const next = !darkMode;
+    setDarkMode(next);
+    persistSettings({ energyLevel, darkMode: next });
+  };
+
+  const styles = useMemo(() => getStyles(darkMode), [darkMode]);
 
   // ─── CRUD ────────────────────────────────────────────────────────────────────
 
@@ -710,7 +733,7 @@ export default function CircleKeeper() {
               <label style={styles.label}>Gesprächsthema (optional)</label>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 }}>
                 {CONVERSATION_TOPICS.map(t => (
-                  <button key={t} style={{ ...styles.topicChip, ...(logTopic === t ? { background: "#18181B", color: "#FAFAF9", borderColor: "#18181B" } : {}) }}
+                  <button key={t} style={{ ...styles.topicChip, ...(logTopic === t ? { background: darkMode ? "#6366F1" : "#18181B", color: "#FAFAF9", borderColor: darkMode ? "#6366F1" : "#18181B" } : {}) }}
                     onClick={() => setLogTopic(logTopic === t ? "" : t)}>{t}</button>
                 ))}
               </div>
@@ -805,7 +828,7 @@ export default function CircleKeeper() {
             {TAGS.map(t => (
               <button key={t} style={{
                 ...styles.topicChip,
-                ...((c.tags || []).includes(t) ? { background: "#18181B", color: "#FAFAF9", borderColor: "#18181B" } : {}),
+                ...((c.tags || []).includes(t) ? { background: darkMode ? "#6366F1" : "#18181B", color: "#FAFAF9", borderColor: darkMode ? "#6366F1" : "#18181B" } : {}),
               }} onClick={() => toggleTag(c, t)}>{t}</button>
             ))}
           </div>
@@ -821,7 +844,7 @@ export default function CircleKeeper() {
                 <label style={{ fontSize: 11, color: "#78716C" }}>Thema</label>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 4 }}>
                   {CONVERSATION_TOPICS.slice(0, 8).map(t => (
-                    <button key={t} style={{ ...styles.topicChip, fontSize: 10, padding: "3px 8px", ...(logTopic === t ? { background: "#18181B", color: "#FAFAF9", borderColor: "#18181B" } : {}) }}
+                    <button key={t} style={{ ...styles.topicChip, fontSize: 10, padding: "3px 8px", ...(logTopic === t ? { background: darkMode ? "#6366F1" : "#18181B", color: "#FAFAF9", borderColor: darkMode ? "#6366F1" : "#18181B" } : {}) }}
                       onClick={() => setLogTopic(logTopic === t ? "" : t)}>{t}</button>
                   ))}
                 </div>
@@ -988,7 +1011,7 @@ export default function CircleKeeper() {
           <label style={styles.label}>Emoji</label>
           <div style={styles.emojiGrid}>
             {EMOJIS.map(e => (
-              <button key={e} style={{ ...styles.emojiBtn, ...(formEmoji === e ? { background: "#18181B", transform: "scale(1.2)" } : {}) }}
+              <button key={e} style={{ ...styles.emojiBtn, ...(formEmoji === e ? { background: darkMode ? "#6366F1" : "#18181B", transform: "scale(1.2)" } : {}) }}
                 onClick={() => setFormEmoji(e)}>{e}</button>
             ))}
           </div>
@@ -1086,7 +1109,7 @@ export default function CircleKeeper() {
             {TAGS.map(t => (
               <button key={t} style={{
                 ...styles.topicChip,
-                ...(formTags.includes(t) ? { background: "#18181B", color: "#FAFAF9", borderColor: "#18181B" } : {}),
+                ...(formTags.includes(t) ? { background: darkMode ? "#6366F1" : "#18181B", color: "#FAFAF9", borderColor: darkMode ? "#6366F1" : "#18181B" } : {}),
               }} onClick={() => setFormTags(formTags.includes(t) ? formTags.filter(x => x !== t) : [...formTags, t])}>
                 {t}
               </button>
@@ -1160,9 +1183,14 @@ export default function CircleKeeper() {
             <h1 style={styles.heroTitle}>Circle<br/>Keeper</h1>
             <p style={styles.heroSub}>Dein Netzwerk verdient Aufmerksamkeit</p>
           </div>
-          <button style={styles.insightsBtn} onClick={() => setView("insights")}>
-            📊
-          </button>
+          <div style={{ display: "flex", gap: 8 }}>
+            <button style={styles.darkToggle} onClick={toggleDarkMode}>
+              {darkMode ? "☀️" : "🌙"}
+            </button>
+            <button style={styles.insightsBtn} onClick={() => setView("insights")}>
+              📊
+            </button>
+          </div>
         </div>
 
         {/* Quick Stats */}
@@ -1419,27 +1447,71 @@ function Fonts() {
 
 // ─── STYLES ──────────────────────────────────────────────────────────────────
 
-const styles = {
-  app: {
-    fontFamily: "'Outfit', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
-    background: `
+function getStyles(dark) {
+  // Theme tokens
+  const t = dark ? {
+    bg: `
+      radial-gradient(ellipse at 20% 0%, rgba(99,102,241,0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 100%, rgba(16,185,129,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(245,158,11,0.04) 0%, transparent 60%),
+      linear-gradient(165deg, #0C0C0F 0%, #111114 35%, #16161A 65%, #1A1A1F 100%)
+    `,
+    bgLoad: "linear-gradient(165deg, #0C0C0F 0%, #16161A 100%)",
+    text: "#F5F5F4",
+    textSec: "#A8A29E",
+    textMuted: "#78716C",
+    card: "rgba(255,255,255,0.06)",
+    cardBorder: "rgba(255,255,255,0.08)",
+    glass: "rgba(255,255,255,0.04)",
+    inputBg: "rgba(255,255,255,0.08)",
+    inputBorder: "rgba(255,255,255,0.1)",
+    divider: "rgba(255,255,255,0.06)",
+    shadow: "0 2px 16px rgba(0,0,0,0.3)",
+    shadowLight: "0 1px 8px rgba(0,0,0,0.2)",
+    chipActive: "#E7E5E4",
+    chipActiveBg: "#27272A",
+    overlay: "rgba(0,0,0,0.5)",
+    dialogBg: "rgba(28,25,23,0.96)",
+    toastBg: "rgba(245,245,244,0.92)",
+    toastColor: "#1C1917",
+    barBg: "rgba(255,255,255,0.1)",
+  } : {
+    bg: `
       radial-gradient(ellipse at 20% 0%, rgba(99,102,241,0.06) 0%, transparent 50%),
       radial-gradient(ellipse at 80% 100%, rgba(16,185,129,0.05) 0%, transparent 50%),
       radial-gradient(ellipse at 50% 50%, rgba(245,158,11,0.03) 0%, transparent 60%),
       linear-gradient(165deg, #FAFAF8 0%, #F5F3EF 35%, #EFECE7 65%, #E9E5E0 100%)
     `,
-    minHeight: "100vh",
-    maxWidth: 480,
-    margin: "0 auto",
-    position: "relative",
-    paddingBottom: 110,
-    color: "#1C1917",
-    overflow: "hidden",
+    bgLoad: "linear-gradient(165deg, #FAFAF8 0%, #EFECE7 100%)",
+    text: "#1C1917",
+    textSec: "#44403C",
+    textMuted: "#78716C",
+    card: "rgba(255,255,255,0.72)",
+    cardBorder: "rgba(0,0,0,0.04)",
+    glass: "rgba(255,255,255,0.65)",
+    inputBg: "rgba(255,255,255,0.75)",
+    inputBorder: "rgba(0,0,0,0.06)",
+    divider: "rgba(0,0,0,0.08)",
+    shadow: "0 2px 16px rgba(0,0,0,0.03)",
+    shadowLight: "0 1px 8px rgba(0,0,0,0.03)",
+    chipActive: "#FAFAF9",
+    chipActiveBg: "#18181B",
+    overlay: "rgba(0,0,0,0.3)",
+    dialogBg: "rgba(250,250,248,0.96)",
+    toastBg: "rgba(24,24,27,0.92)",
+    toastColor: "#FAFAF9",
+    barBg: "rgba(0,0,0,0.06)",
+  };
+
+  return {
+  app: {
+    fontFamily: "'Outfit', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
+    background: t.bg, minHeight: "100vh", maxWidth: 480, margin: "0 auto",
+    position: "relative", paddingBottom: 110, color: t.text, overflow: "hidden",
   },
   loadWrap: {
     display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-    height: "100vh",
-    background: "linear-gradient(165deg, #FAFAF8 0%, #EFECE7 100%)",
+    height: "100vh", background: t.bgLoad,
   },
   loadPulse: { fontSize: 52, animation: "pulse 1.8s ease-in-out infinite", color: "#6366F1", marginBottom: 20 },
 
@@ -1449,112 +1521,103 @@ const styles = {
   heroShape: { position: "absolute", color: "#6366F1", animation: "float 5s ease-in-out infinite" },
   heroTitle: {
     fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 48, fontWeight: 400,
-    lineHeight: 0.95, color: "#1C1917", margin: 0, letterSpacing: -2,
-    background: "linear-gradient(135deg, #1C1917 0%, #6366F1 100%)",
-    WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-    backgroundClip: "text",
+    lineHeight: 0.95, margin: 0, letterSpacing: -2,
+    background: dark ? "linear-gradient(135deg, #E7E5E4 0%, #818CF8 100%)" : "linear-gradient(135deg, #1C1917 0%, #6366F1 100%)",
+    WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text",
   },
-  heroSub: { fontSize: 15, color: "#78716C", marginTop: 12, fontWeight: 400, letterSpacing: 0.2 },
+  heroSub: { fontSize: 15, color: t.textMuted, marginTop: 12, fontWeight: 400, letterSpacing: 0.2 },
   insightsBtn: {
     width: 48, height: 48, borderRadius: 16, border: "none",
-    background: "rgba(255,255,255,0.75)", display: "flex", alignItems: "center", justifyContent: "center",
+    background: t.glass, display: "flex", alignItems: "center", justifyContent: "center",
     fontSize: 20, cursor: "pointer", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
-    boxShadow: "0 2px 16px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.03)",
-    transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+    boxShadow: t.shadowLight, transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
   },
   statsRow: {
     display: "flex", alignItems: "center", justifyContent: "center", gap: 18,
-    marginTop: 28, padding: "22px 22px",
-    background: "rgba(255,255,255,0.72)",
+    marginTop: 28, padding: "22px 22px", background: t.card,
     borderRadius: 24, backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", flexWrap: "wrap",
-    boxShadow: "0 4px 32px rgba(0,0,0,0.04), 0 0 0 1px rgba(255,255,255,0.8)",
-    border: "1px solid rgba(0,0,0,0.04)",
+    boxShadow: t.shadow, border: `1px solid ${t.cardBorder}`,
   },
   stat: { display: "flex", flexDirection: "column", alignItems: "center", gap: 4 },
-  statNum: { fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 32, color: "#1C1917", lineHeight: 1 },
-  statLabel: { fontSize: 10, color: "#78716C", fontWeight: 600, letterSpacing: 1, textTransform: "uppercase" },
+  statNum: { fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 32, color: t.text, lineHeight: 1 },
+  statLabel: { fontSize: 10, color: t.textMuted, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase" },
 
   // Section
   section: { padding: "16px 28px 10px" },
   sectionTitle: {
     fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 19, fontWeight: 400,
-    margin: "0 0 14px 0", color: "#1C1917",
+    margin: "0 0 14px 0", color: t.text,
   },
 
   // Energy
   energyBtn: {
     flex: "0 0 auto", display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
-    padding: "14px 18px", borderRadius: 20, border: "1px solid rgba(0,0,0,0.04)",
-    background: "rgba(255,255,255,0.65)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
+    padding: "14px 18px", borderRadius: 20, border: `1px solid ${t.cardBorder}`,
+    background: t.glass, backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
     cursor: "pointer", transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)", fontFamily: "'Outfit', sans-serif",
-    boxShadow: "0 2px 12px rgba(0,0,0,0.03)",
+    boxShadow: t.shadowLight,
   },
 
   // Suggestions
   suggestionList: { display: "flex", flexDirection: "column", gap: 10 },
   suggestionCard: {
     display: "flex", alignItems: "center", gap: 14, padding: "16px 20px",
-    background: "rgba(255,255,255,0.72)", border: "1px solid rgba(0,0,0,0.04)",
+    background: t.card, border: `1px solid ${t.cardBorder}`,
     borderRadius: 20, cursor: "pointer", transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
     fontFamily: "'Outfit', sans-serif", width: "100%", textAlign: "left",
-    backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
-    boxShadow: "0 2px 16px rgba(0,0,0,0.03)",
+    backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", boxShadow: t.shadow,
   },
 
   // Attention cards
   attentionScroll: { display: "flex", gap: 12, overflowX: "auto", paddingBottom: 10, scrollSnapType: "x mandatory" },
   attentionCard: {
-    flex: "0 0 auto", width: 120, padding: "20px 14px", background: "rgba(255,255,255,0.75)",
-    border: "1px solid rgba(0,0,0,0.04)", borderRadius: 22,
+    flex: "0 0 auto", width: 120, padding: "20px 14px", background: t.card,
+    border: `1px solid ${t.cardBorder}`, borderRadius: 22,
     display: "flex", flexDirection: "column", alignItems: "center", gap: 7,
     cursor: "pointer", scrollSnapAlign: "start", transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
-    boxShadow: "0 4px 24px rgba(0,0,0,0.04)",
-    backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
+    boxShadow: t.shadow, backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
     fontFamily: "'Outfit', sans-serif",
   },
   attentionEmoji: { fontSize: 32 },
-  attentionName: { fontSize: 12, fontWeight: 600, color: "#1C1917", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%" },
+  attentionName: { fontSize: 12, fontWeight: 600, color: t.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%" },
   attentionStatus: { fontSize: 11, fontWeight: 700 },
-  attentionTime: { fontSize: 10, color: "#78716C" },
+  attentionTime: { fontSize: 10, color: t.textMuted },
 
   // Filters
   filterRow: { display: "flex", gap: 8, padding: "10px 28px 6px", overflowX: "auto", alignItems: "center" },
   filterBtn: {
-    padding: "9px 18px", borderRadius: 50, border: "1px solid rgba(0,0,0,0.06)",
-    background: "rgba(255,255,255,0.6)", fontSize: 12, fontWeight: 500, color: "#44403C",
+    padding: "9px 18px", borderRadius: 50, border: `1px solid ${t.inputBorder}`,
+    background: t.glass, fontSize: 12, fontWeight: 500, color: t.textSec,
     cursor: "pointer", whiteSpace: "nowrap", fontFamily: "'Outfit', sans-serif",
     transition: "all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)", flexShrink: 0,
-    backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
-    boxShadow: "0 1px 6px rgba(0,0,0,0.02)",
+    backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", boxShadow: t.shadowLight,
   },
   filterActive: {
-    background: "linear-gradient(135deg, #18181B 0%, #27272A 100%)", color: "#FAFAF9",
-    boxShadow: "0 4px 16px rgba(24,24,27,0.2)", border: "1px solid transparent",
+    background: dark ? "linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)" : "linear-gradient(135deg, #18181B 0%, #27272A 100%)",
+    color: "#FAFAF9", boxShadow: "0 4px 16px rgba(99,102,241,0.2)", border: "1px solid transparent",
   },
 
   // Contact List
   contactList: { padding: "8px 20px" },
   contactCard: {
     display: "flex", alignItems: "center", justifyContent: "space-between",
-    width: "100%", padding: "18px 20px", background: "rgba(255,255,255,0.72)",
-    border: "1px solid rgba(0,0,0,0.04)", borderRadius: 22,
+    width: "100%", padding: "18px 20px", background: t.card,
+    border: `1px solid ${t.cardBorder}`, borderRadius: 22,
     marginBottom: 10, cursor: "pointer", transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
-    animation: "fadeUp 0.5s ease-out both",
-    boxShadow: "0 2px 16px rgba(0,0,0,0.03)",
+    animation: "fadeUp 0.5s ease-out both", boxShadow: t.shadow,
     fontFamily: "'Outfit', sans-serif", textAlign: "left",
     backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
   },
   cardLeft: { display: "flex", alignItems: "center", gap: 14, minWidth: 0, flex: 1 },
   cardEmoji: {
     width: 50, height: 50, borderRadius: 18, display: "flex", alignItems: "center", justifyContent: "center",
-    fontSize: 24, flexShrink: 0, boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
-    border: "1px solid rgba(0,0,0,0.04)",
+    fontSize: 24, flexShrink: 0, boxShadow: t.shadowLight, border: `1px solid ${t.cardBorder}`,
   },
   cardInfo: { display: "flex", flexDirection: "column", gap: 4, minWidth: 0 },
-  cardName: { fontSize: 15, fontWeight: 600, color: "#1C1917", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" },
-  cardMeta: { fontSize: 11, color: "#78716C", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" },
+  cardName: { fontSize: 15, fontWeight: 600, color: t.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" },
+  cardMeta: { fontSize: 11, color: t.textMuted, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" },
   cardRight: { display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 5, flexShrink: 0, marginLeft: 10 },
-  miniBar: { width: 56, height: 6, borderRadius: 20, background: "rgba(0,0,0,0.06)", overflow: "hidden" },
+  miniBar: { width: 56, height: 6, borderRadius: 20, background: t.barBg, overflow: "hidden" },
   miniBarFill: { height: "100%", borderRadius: 20, transition: "width 0.8s cubic-bezier(0.4, 0, 0.2, 1)" },
   cardStatus: { fontSize: 10, fontWeight: 700, letterSpacing: 0.3 },
 
@@ -1572,52 +1635,46 @@ const styles = {
 
   // Header
   header: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 24px 10px" },
-  headerTitle: { fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 21, margin: 0, color: "#1C1917" },
+  headerTitle: { fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 21, margin: 0, color: t.text },
   backBtn: {
-    background: "rgba(255,255,255,0.7)", border: "1px solid rgba(0,0,0,0.06)", fontSize: 14, color: "#44403C",
+    background: t.glass, border: `1px solid ${t.inputBorder}`, fontSize: 14, color: t.textSec,
     cursor: "pointer", fontFamily: "'Outfit', sans-serif", fontWeight: 500, padding: "10px 18px",
     borderRadius: 50, backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
-    boxShadow: "0 1px 8px rgba(0,0,0,0.03)",
-    transition: "all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)",
+    boxShadow: t.shadowLight, transition: "all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)",
   },
   editBtn: {
-    background: "rgba(255,255,255,0.7)", border: "1px solid rgba(0,0,0,0.06)", fontSize: 16, color: "#44403C",
+    background: t.glass, border: `1px solid ${t.inputBorder}`, fontSize: 16, color: t.textSec,
     cursor: "pointer", padding: "10px 14px", borderRadius: 50,
     backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
-    boxShadow: "0 1px 8px rgba(0,0,0,0.03)",
-    transition: "all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)",
+    boxShadow: t.shadowLight, transition: "all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)",
   },
 
   // Detail
   detailHero: { textAlign: "center", padding: "12px 28px 24px" },
   detailEmoji: {
-    fontSize: 64, marginBottom: 14,
-    width: 108, height: 108, lineHeight: "108px",
-    borderRadius: 32, background: "rgba(255,255,255,0.75)",
-    display: "inline-block",
-    boxShadow: "0 12px 40px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.03)",
-    backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
-    border: "1px solid rgba(255,255,255,0.8)",
+    fontSize: 64, marginBottom: 14, width: 108, height: 108, lineHeight: "108px",
+    borderRadius: 32, background: t.card, display: "inline-block",
+    boxShadow: t.shadow, backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
+    border: `1px solid ${t.cardBorder}`,
     animation: "popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both",
   },
-  detailName: { fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 36, fontWeight: 400, margin: "0 0 12px", color: "#1C1917", letterSpacing: -0.5 },
+  detailName: { fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 36, fontWeight: 400, margin: "0 0 12px", color: t.text, letterSpacing: -0.5 },
   catBadge: {
     display: "inline-block", padding: "7px 18px", borderRadius: 50, fontSize: 12, fontWeight: 600,
-    backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
-    border: "1px solid rgba(0,0,0,0.06)",
+    backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", border: `1px solid ${t.inputBorder}`,
   },
   warmthBarOuter: {
-    height: 8, borderRadius: 20, background: "rgba(0,0,0,0.06)", margin: "20px auto 10px",
+    height: 8, borderRadius: 20, background: t.barBg, margin: "20px auto 10px",
     maxWidth: 220, overflow: "hidden",
   },
   warmthBarInner: { height: "100%", borderRadius: 20, transition: "width 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)" },
-  warmthLabel: { fontSize: 12, color: "#78716C", letterSpacing: 0.2 },
+  warmthLabel: { fontSize: 12, color: t.textMuted, letterSpacing: 0.2 },
   noteBox: {
     margin: "0 28px 14px", padding: "18px 22px",
-    background: "rgba(255,255,255,0.68)", borderRadius: 20,
-    fontSize: 13, color: "#44403C", lineHeight: 1.65,
+    background: t.card, borderRadius: 20,
+    fontSize: 13, color: t.textSec, lineHeight: 1.65,
     backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
-    boxShadow: "0 2px 16px rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.04)",
+    boxShadow: t.shadow, border: `1px solid ${t.cardBorder}`,
   },
   bdayBadge: {
     display: "inline-block", marginTop: 12, padding: "7px 20px", borderRadius: 50,
@@ -1628,41 +1685,37 @@ const styles = {
 
   // Balance card
   balanceCard: {
-    margin: "0 28px 14px", padding: "20px 22px", background: "rgba(255,255,255,0.68)",
-    borderRadius: 22, border: "1px solid rgba(0,0,0,0.04)",
-    backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
-    boxShadow: "0 2px 16px rgba(0,0,0,0.03)",
+    margin: "0 28px 14px", padding: "20px 22px", background: t.card,
+    borderRadius: 22, border: `1px solid ${t.cardBorder}`,
+    backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", boxShadow: t.shadow,
   },
 
   // Contact info
   contactInfo: {
-    fontSize: 12, color: "#44403C", padding: "9px 16px", borderRadius: 50,
-    background: "rgba(255,255,255,0.68)", border: "1px solid rgba(0,0,0,0.05)",
+    fontSize: 12, color: t.textSec, padding: "9px 16px", borderRadius: 50,
+    background: t.card, border: `1px solid ${t.cardBorder}`,
     backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
-    boxShadow: "0 1px 6px rgba(0,0,0,0.02)",
-    fontWeight: 500,
+    boxShadow: t.shadowLight, fontWeight: 500,
   },
 
   // Tags
   tagDisplay: {
     fontSize: 11, padding: "6px 16px", borderRadius: 50,
-    background: "rgba(99,102,241,0.08)", color: "#4F46E5", fontWeight: 600,
-    border: "1px solid rgba(99,102,241,0.1)",
+    background: "rgba(99,102,241,0.08)", color: dark ? "#818CF8" : "#4F46E5", fontWeight: 600,
+    border: "1px solid rgba(99,102,241,0.12)",
   },
   topicChip: {
-    padding: "8px 16px", borderRadius: 50, border: "1px solid rgba(0,0,0,0.06)",
-    background: "rgba(255,255,255,0.6)", fontSize: 11, color: "#44403C", cursor: "pointer",
+    padding: "8px 16px", borderRadius: 50, border: `1px solid ${t.inputBorder}`,
+    background: t.glass, fontSize: 11, color: t.textSec, cursor: "pointer",
     fontFamily: "'Outfit', sans-serif", transition: "all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)", whiteSpace: "nowrap",
-    boxShadow: "0 1px 6px rgba(0,0,0,0.02)",
-    backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
-    fontWeight: 500,
+    boxShadow: t.shadowLight, backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", fontWeight: 500,
   },
 
   // Incoming
   incomingBtn: {
     width: "100%", padding: "18px 22px", borderRadius: 22,
     border: "1px solid rgba(14,165,233,0.15)", background: "rgba(14,165,233,0.06)",
-    color: "#0284C7", fontSize: 14, fontWeight: 600, cursor: "pointer",
+    color: dark ? "#38BDF8" : "#0284C7", fontSize: 14, fontWeight: 600, cursor: "pointer",
     fontFamily: "'Outfit', sans-serif", transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
     textAlign: "center", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
     boxShadow: "0 2px 12px rgba(14,165,233,0.06)",
@@ -1672,93 +1725,80 @@ const styles = {
   actionGrid: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 10 },
   actionBtn: {
     display: "flex", flexDirection: "column", alignItems: "center", gap: 7,
-    padding: "18px 8px", background: "rgba(255,255,255,0.72)", border: "1px solid rgba(0,0,0,0.04)",
+    padding: "18px 8px", background: t.card, border: `1px solid ${t.cardBorder}`,
     borderRadius: 20, cursor: "pointer", transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
     fontFamily: "'Outfit', sans-serif",
-    backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
-    boxShadow: "0 2px 12px rgba(0,0,0,0.03)",
+    backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", boxShadow: t.shadow,
   },
-  actionLabel: { fontSize: 10, fontWeight: 700, color: "#1C1917", letterSpacing: 0.2 },
+  actionLabel: { fontSize: 10, fontWeight: 700, color: t.text, letterSpacing: 0.2 },
 
   // Timeline
   timeline: { paddingLeft: 8 },
   timelineItem: {
     display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 12, position: "relative",
-    padding: "12px 16px", background: "rgba(255,255,255,0.5)", borderRadius: 18,
+    padding: "12px 16px", background: t.glass, borderRadius: 18,
     backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
-    border: "1px solid rgba(0,0,0,0.03)",
-    transition: "all 0.2s ease",
+    border: `1px solid ${t.cardBorder}`, transition: "all 0.2s ease",
   },
   timelineDot: {
-    width: 10, height: 10, borderRadius: 20, background: "#D6D3D1", marginTop: 5, flexShrink: 0,
+    width: 10, height: 10, borderRadius: 20, background: dark ? "#57534E" : "#D6D3D1", marginTop: 5, flexShrink: 0,
     boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
   },
   timelineContent: { display: "flex", justifyContent: "space-between", flex: 1, fontSize: 13, alignItems: "flex-start" },
-  timelineDate: { fontSize: 11, color: "#78716C", flexShrink: 0, marginLeft: 8 },
+  timelineDate: { fontSize: 11, color: t.textMuted, flexShrink: 0, marginLeft: 8 },
 
   // Form
   formWrap: { padding: "8px 28px", paddingBottom: 36 },
   formInner: { display: "flex", flexDirection: "column", gap: 20 },
   formGroup: { display: "flex", flexDirection: "column", gap: 8 },
-  label: { fontSize: 13, fontWeight: 700, color: "#44403C", letterSpacing: 0.3 },
+  label: { fontSize: 13, fontWeight: 700, color: t.textSec, letterSpacing: 0.3 },
   input: {
-    padding: "15px 22px", borderRadius: 16, border: "1px solid rgba(0,0,0,0.06)",
+    padding: "15px 22px", borderRadius: 16, border: `1px solid ${t.inputBorder}`,
     fontSize: 15, fontFamily: "'Outfit', sans-serif",
-    background: "rgba(255,255,255,0.75)", color: "#1C1917", outline: "none",
+    background: t.inputBg, color: t.text, outline: "none",
     transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
-    backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.02)",
+    backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", boxShadow: t.shadowLight,
   },
   textarea: {
-    padding: "16px 22px", borderRadius: 20, border: "1px solid rgba(0,0,0,0.06)",
+    padding: "16px 22px", borderRadius: 20, border: `1px solid ${t.inputBorder}`,
     fontSize: 14, fontFamily: "'Outfit', sans-serif",
-    background: "rgba(255,255,255,0.75)", color: "#1C1917", outline: "none", resize: "none",
+    background: t.inputBg, color: t.text, outline: "none", resize: "none",
     transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
-    backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.02)",
+    backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", boxShadow: t.shadowLight,
   },
   emojiGrid: { display: "flex", flexWrap: "wrap", gap: 8 },
   emojiBtn: {
-    width: 44, height: 44, borderRadius: 14, border: "1px solid rgba(0,0,0,0.04)",
-    background: "rgba(255,255,255,0.6)",
-    fontSize: 19, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+    width: 44, height: 44, borderRadius: 14, border: `1px solid ${t.cardBorder}`,
+    background: t.glass, fontSize: 19, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
     transition: "all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)",
-    boxShadow: "0 1px 6px rgba(0,0,0,0.02)",
-    backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
+    boxShadow: t.shadowLight, backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
   },
   catSelect: { display: "flex", gap: 8, flexWrap: "wrap" },
   catOption: {
-    padding: "10px 18px", borderRadius: 50, border: "1px solid rgba(0,0,0,0.06)",
-    background: "rgba(255,255,255,0.6)",
-    fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "'Outfit', sans-serif",
-    transition: "all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)", color: "#44403C",
-    boxShadow: "0 1px 6px rgba(0,0,0,0.02)",
-    backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
+    padding: "10px 18px", borderRadius: 50, border: `1px solid ${t.inputBorder}`,
+    background: t.glass, fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "'Outfit', sans-serif",
+    transition: "all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)", color: t.textSec,
+    boxShadow: t.shadowLight, backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
   },
   freqSelect: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 },
   freqOption: {
-    padding: "13px 10px", borderRadius: 16, border: "1px solid rgba(0,0,0,0.06)",
-    background: "rgba(255,255,255,0.6)",
-    fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "'Outfit', sans-serif",
-    transition: "all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)", color: "#44403C", textAlign: "center",
-    boxShadow: "0 1px 6px rgba(0,0,0,0.02)",
-    backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
+    padding: "13px 10px", borderRadius: 16, border: `1px solid ${t.inputBorder}`,
+    background: t.glass, fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "'Outfit', sans-serif",
+    transition: "all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)", color: t.textSec, textAlign: "center",
+    boxShadow: t.shadowLight, backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
   },
   submitBtn: {
     padding: "18px 28px", borderRadius: 18, border: "none",
     background: "linear-gradient(135deg, #6366F1 0%, #4F46E5 50%, #4338CA 100%)",
-    color: "#fff", fontSize: 16, fontWeight: 600, cursor: "pointer",
-    fontFamily: "'Outfit', sans-serif",
+    color: "#fff", fontSize: 16, fontWeight: 600, cursor: "pointer", fontFamily: "'Outfit', sans-serif",
     boxShadow: "0 8px 32px rgba(99,102,241,0.3), 0 0 0 1px rgba(99,102,241,0.1)",
-    marginTop: 8, transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
-    letterSpacing: 0.3,
+    marginTop: 8, transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)", letterSpacing: 0.3,
   },
   cancelBtn: {
-    padding: "15px 24px", borderRadius: 16, border: "1px solid rgba(0,0,0,0.08)",
-    background: "rgba(255,255,255,0.6)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
-    color: "#44403C", fontSize: 14, fontWeight: 500, cursor: "pointer", fontFamily: "'Outfit', sans-serif",
-    boxShadow: "0 1px 6px rgba(0,0,0,0.02)",
-    transition: "all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)",
+    padding: "15px 24px", borderRadius: 16, border: `1px solid ${t.inputBorder}`,
+    background: t.glass, backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
+    color: t.textSec, fontSize: 14, fontWeight: 500, cursor: "pointer", fontFamily: "'Outfit', sans-serif",
+    boxShadow: t.shadowLight, transition: "all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)",
   },
   deleteBtn: {
     margin: "28px auto", display: "block", padding: "14px 28px", borderRadius: 16,
@@ -1770,51 +1810,49 @@ const styles = {
 
   // Insights
   insightCard: {
-    margin: "10px 28px", padding: "24px 24px", background: "rgba(255,255,255,0.68)",
-    borderRadius: 24, border: "1px solid rgba(0,0,0,0.04)",
-    backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
-    boxShadow: "0 4px 24px rgba(0,0,0,0.03)",
+    margin: "10px 28px", padding: "24px 24px", background: t.card,
+    borderRadius: 24, border: `1px solid ${t.cardBorder}`,
+    backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", boxShadow: t.shadow,
   },
   insightTitle: {
     fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 17, fontWeight: 400,
-    margin: "0 0 16px 0", color: "#1C1917",
+    margin: "0 0 16px 0", color: t.text,
   },
   healthBar: { display: "flex", borderRadius: 20, overflow: "hidden", height: 10 },
   balanceRow: {
     display: "flex", alignItems: "center", gap: 12, padding: "12px 0",
     width: "100%", background: "transparent", border: "none",
-    borderBottom: "1px solid rgba(0,0,0,0.05)",
-    cursor: "pointer", fontFamily: "'Outfit', sans-serif",
-    transition: "all 0.2s",
+    borderBottom: `1px solid ${t.divider}`,
+    cursor: "pointer", fontFamily: "'Outfit', sans-serif", transition: "all 0.2s",
   },
 
   // Empty
   emptyState: { textAlign: "center", padding: "60px 28px" },
-  emptyTitle: { fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 24, color: "#1C1917", margin: "16px 0 8px" },
-  emptyHint: { fontSize: 14, color: "#78716C" },
+  emptyTitle: { fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 24, color: t.text, margin: "16px 0 8px" },
+  emptyHint: { fontSize: 14, color: t.textMuted },
 
   // Toast
   toast: {
     position: "fixed", bottom: 104, left: "50%", transform: "translateX(-50%)",
     padding: "14px 28px", borderRadius: 50,
-    background: "rgba(24,24,27,0.92)", color: "#FAFAF9",
+    background: t.toastBg, color: t.toastColor,
     fontSize: 14, fontWeight: 500, zIndex: 200,
     animation: "slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
-    boxShadow: "0 8px 32px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.05)", fontFamily: "'Outfit', sans-serif",
+    boxShadow: "0 8px 32px rgba(0,0,0,0.2)", fontFamily: "'Outfit', sans-serif",
     whiteSpace: "nowrap", letterSpacing: 0.3,
   },
 
   // Confirmation Dialog
   confirmOverlay: {
-    position: "fixed", inset: 0, background: "rgba(0,0,0,0.3)",
+    position: "fixed", inset: 0, background: t.overlay,
     backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
     display: "flex", alignItems: "center", justifyContent: "center",
     zIndex: 300, animation: "fadeUp 0.2s ease-out",
   },
   confirmDialog: {
-    background: "rgba(250,250,248,0.96)", borderRadius: 28,
+    background: t.dialogBg, borderRadius: 28,
     padding: "32px 28px 24px", maxWidth: 360, width: "90%",
-    boxShadow: "0 24px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.04)",
+    boxShadow: "0 24px 80px rgba(0,0,0,0.25), 0 0 0 1px " + t.cardBorder,
     backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
     fontFamily: "'Outfit', sans-serif",
     animation: "popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both",
@@ -1828,9 +1866,18 @@ const styles = {
   },
   confirmCancel: {
     flex: 1, padding: "15px 0", borderRadius: 16,
-    border: "1.5px solid rgba(0,0,0,0.1)", background: "transparent",
-    color: "#44403C", fontSize: 14, fontWeight: 500,
+    border: `1.5px solid ${t.inputBorder}`, background: "transparent",
+    color: t.textSec, fontSize: 14, fontWeight: 500,
     cursor: "pointer", fontFamily: "'Outfit', sans-serif",
     transition: "all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)",
   },
-};
+
+  // Dark mode toggle
+  darkToggle: {
+    width: 40, height: 40, borderRadius: 12, border: `1px solid ${t.inputBorder}`,
+    background: t.glass, display: "flex", alignItems: "center", justifyContent: "center",
+    fontSize: 18, cursor: "pointer", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
+    boxShadow: t.shadowLight, transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+  },
+  };
+}
