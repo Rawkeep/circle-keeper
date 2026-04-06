@@ -196,6 +196,7 @@ export default function CircleKeeper() {
   const [logNote, setLogNote] = useState("");
   const [logTopic, setLogTopic] = useState("");
   const [showLogOptions, setShowLogOptions] = useState(false);
+  const [pendingAction, setPendingAction] = useState(null); // {contact, actionId, note, topic}
 
   // Form state
   const [formName, setFormName] = useState("");
@@ -302,6 +303,54 @@ export default function CircleKeeper() {
     setView("dashboard");
     showToast("Entfernt");
   };
+
+  // ─── Deep-Link Launcher ─────────────────────────────────────────────
+  const ACTION_LINKS = {
+    call:  (c) => c.phone ? `tel:${c.phone}` : null,
+    text:  (c) => c.phone ? `sms:${c.phone}` : null,
+    email: (c) => c.email ? `mailto:${c.email}` : null,
+    video: (c) => c.phone ? `facetime:${c.phone}` : (c.email ? `facetime:${c.email}` : null),
+    voice: (c) => c.phone ? `tel:${c.phone}` : null,
+  };
+
+  const ACTION_LABELS_DE = {
+    call:  (c) => `${c.name} anrufen?`,
+    text:  (c) => `Nachricht an ${c.name} schreiben?`,
+    email: (c) => `E-Mail an ${c.name} senden?`,
+    video: (c) => `Videocall mit ${c.name} starten?`,
+    voice: (c) => `Sprachnachricht an ${c.name}?`,
+    meet:  (c) => `Treffen mit ${c.name} loggen?`,
+    gift:  (c) => `Überraschung für ${c.name} loggen?`,
+    react: (c) => `Reaktion an ${c.name} loggen?`,
+  };
+
+  const ACTION_MISSING_DE = {
+    call:  "Keine Telefonnummer hinterlegt. Trotzdem als Anruf loggen?",
+    text:  "Keine Telefonnummer hinterlegt. Trotzdem als Nachricht loggen?",
+    email: "Keine E-Mail-Adresse hinterlegt. Trotzdem loggen?",
+    video: "Keine Telefonnummer/E-Mail hinterlegt. Trotzdem loggen?",
+    voice: "Keine Telefonnummer hinterlegt. Trotzdem loggen?",
+  };
+
+  const initiateAction = (contact, actionId, note = "", topic = "") => {
+    const action = REACH_ACTIONS.find(a => a.id === actionId);
+    if (!action) return;
+    const linkFn = ACTION_LINKS[actionId];
+    const link = linkFn ? linkFn(contact) : null;
+    setPendingAction({ contact, actionId, note, topic, link });
+  };
+
+  const confirmAction = () => {
+    if (!pendingAction) return;
+    const { contact, actionId, note, topic, link } = pendingAction;
+    if (link) {
+      window.open(link, "_blank");
+    }
+    logReach(contact, actionId, note, topic);
+    setPendingAction(null);
+  };
+
+  const cancelAction = () => setPendingAction(null);
 
   const logReach = (contact, actionId, note = "", topic = "") => {
     const action = REACH_ACTIONS.find(a => a.id === actionId);
@@ -732,7 +781,7 @@ export default function CircleKeeper() {
               const energyOk = energyLevel === "high" || a.effort <= (energyLevel === "medium" ? 3 : energyLevel === "low" ? 1 : 0);
               return (
                 <button key={a.id} style={{ ...styles.actionBtn, opacity: energyOk ? 1 : 0.4 }}
-                  onClick={() => logReach(c, a.id, logNote, logTopic)}>
+                  onClick={() => initiateAction(c, a.id, logNote, logTopic)}>
                   <span style={{ fontSize: 22 }}>{a.icon}</span>
                   <span style={styles.actionLabel}>{a.label}</span>
                   {!energyOk && <span style={{ fontSize: 9, color: "#8B7E74" }}>Energie?</span>}
@@ -780,6 +829,50 @@ export default function CircleKeeper() {
         </button>
 
         {toast && <div style={styles.toast}>{toast}</div>}
+
+        {/* ─── Action Confirmation Dialog (Detail View) ─── */}
+        {pendingAction && (() => {
+          const { contact, actionId, link } = pendingAction;
+          const action = REACH_ACTIONS.find(a => a.id === actionId);
+          const labelFn = ACTION_LABELS_DE[actionId];
+          const headline = labelFn ? labelFn(contact) : `${action.label} mit ${contact.name}?`;
+          const missingMsg = !link && ACTION_MISSING_DE[actionId];
+          const hasLink = !!link;
+          const linkLabel = {
+            call: `📞 ${contact.phone}`,
+            text: `💬 ${contact.phone}`,
+            email: `📧 ${contact.email}`,
+            video: `🖥️ ${contact.phone || contact.email}`,
+            voice: `🎙️ ${contact.phone}`,
+          }[actionId];
+
+          return (
+            <div style={styles.confirmOverlay} onClick={cancelAction}>
+              <div style={styles.confirmDialog} onClick={e => e.stopPropagation()}>
+                <div style={{ fontSize: 40, textAlign: "center", marginBottom: 8 }}>{action.icon}</div>
+                <h3 style={{ fontFamily: "'DM Serif Display', serif", fontSize: 20, textAlign: "center", marginBottom: 4 }}>
+                  {headline}
+                </h3>
+                {hasLink && (
+                  <p style={{ textAlign: "center", fontSize: 13, color: "#6B5E54", marginBottom: 12 }}>
+                    {linkLabel} — App wird geöffnet
+                  </p>
+                )}
+                {missingMsg && (
+                  <p style={{ textAlign: "center", fontSize: 12, color: "#B8860B", background: "rgba(184,134,11,.08)", padding: "6px 10px", borderRadius: 8, marginBottom: 12 }}>
+                    ⚠ {missingMsg}
+                  </p>
+                )}
+                <div style={{ display: "flex", gap: 10, marginTop: 8 }}>
+                  <button style={styles.confirmCancel} onClick={cancelAction}>Abbrechen</button>
+                  <button style={styles.confirmOk} onClick={confirmAction}>
+                    {hasLink ? `${action.icon} Öffnen & Loggen` : `${action.icon} Loggen`}
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
       </div>
     );
   }
@@ -1146,6 +1239,50 @@ export default function CircleKeeper() {
       </button>
 
       {toast && <div style={styles.toast}>{toast}</div>}
+
+      {/* ─── Action Confirmation Dialog ─── */}
+      {pendingAction && (() => {
+        const { contact, actionId, link } = pendingAction;
+        const action = REACH_ACTIONS.find(a => a.id === actionId);
+        const labelFn = ACTION_LABELS_DE[actionId];
+        const headline = labelFn ? labelFn(contact) : `${action.label} mit ${contact.name}?`;
+        const missingMsg = !link && ACTION_MISSING_DE[actionId];
+        const hasLink = !!link;
+        const linkLabel = {
+          call: `📞 ${contact.phone}`,
+          text: `💬 ${contact.phone}`,
+          email: `📧 ${contact.email}`,
+          video: `🖥️ ${contact.phone || contact.email}`,
+          voice: `🎙️ ${contact.phone}`,
+        }[actionId];
+
+        return (
+          <div style={styles.confirmOverlay} onClick={cancelAction}>
+            <div style={styles.confirmDialog} onClick={e => e.stopPropagation()}>
+              <div style={{ fontSize: 40, textAlign: "center", marginBottom: 8 }}>{action.icon}</div>
+              <h3 style={{ fontFamily: "'DM Serif Display', serif", fontSize: 20, textAlign: "center", marginBottom: 4 }}>
+                {headline}
+              </h3>
+              {hasLink && (
+                <p style={{ textAlign: "center", fontSize: 13, color: "#6B5E54", marginBottom: 12 }}>
+                  {linkLabel} — App wird geöffnet
+                </p>
+              )}
+              {missingMsg && (
+                <p style={{ textAlign: "center", fontSize: 12, color: "#B8860B", background: "rgba(184,134,11,.08)", padding: "6px 10px", borderRadius: 8, marginBottom: 12 }}>
+                  ⚠ {missingMsg}
+                </p>
+              )}
+              <div style={{ display: "flex", gap: 10, marginTop: 8 }}>
+                <button style={styles.confirmCancel} onClick={cancelAction}>Abbrechen</button>
+                <button style={styles.confirmOk} onClick={confirmAction}>
+                  {hasLink ? `${action.icon} Öffnen & Loggen` : `${action.icon} Loggen`}
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }
@@ -1518,5 +1655,33 @@ const styles = {
     animation: "fadeUp 0.4s cubic-bezier(0.4, 0, 0.2, 1)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
     boxShadow: "0 8px 32px rgba(0,0,0,0.2)", fontFamily: "'Outfit', sans-serif",
     whiteSpace: "nowrap", letterSpacing: 0.2,
+  },
+
+  // Confirmation Dialog
+  confirmOverlay: {
+    position: "fixed", inset: 0, background: "rgba(44,36,32,0.45)",
+    backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
+    display: "flex", alignItems: "center", justifyContent: "center",
+    zIndex: 300, animation: "fadeUp 0.2s ease-out",
+  },
+  confirmDialog: {
+    background: "rgba(251,247,242,0.95)", borderRadius: 28,
+    padding: "28px 24px 22px", maxWidth: 340, width: "90%",
+    boxShadow: "0 20px 60px rgba(44,36,32,0.25), inset 0 1px 0 rgba(255,255,255,0.7)",
+    backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
+    fontFamily: "'Outfit', sans-serif",
+  },
+  confirmOk: {
+    flex: 1, padding: "14px 0", borderRadius: 16, border: "none",
+    background: "#3A2F28", color: "#FAF5EF", fontSize: 14, fontWeight: 600,
+    cursor: "pointer", fontFamily: "'Outfit', sans-serif",
+    transition: "all 0.2s", letterSpacing: 0.3,
+  },
+  confirmCancel: {
+    flex: 1, padding: "14px 0", borderRadius: 16,
+    border: "1.5px solid rgba(91,74,63,0.15)", background: "transparent",
+    color: "#5B4A3F", fontSize: 14, fontWeight: 500,
+    cursor: "pointer", fontFamily: "'Outfit', sans-serif",
+    transition: "all 0.2s",
   },
 };
